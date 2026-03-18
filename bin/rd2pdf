@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+# Usage: bin/rd2pdf <file.rd> [output.pdf]
+# Converts a Rabbit RD slide file to PDF.
+# If output path is omitted, saves as docs/slides/<basename>.pdf
+
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+SLIDES_OUT="$REPO_ROOT/docs/slides"
+
+if [ $# -eq 0 ]; then
+  echo "Usage: $(basename "$0") <file.rd> [output.pdf]" >&2
+  exit 1
+fi
+
+INPUT="$1"
+
+if [ ! -f "$INPUT" ]; then
+  echo "Error: file not found: $INPUT" >&2
+  exit 1
+fi
+
+if [ $# -ge 2 ]; then
+  OUTPUT="$2"
+else
+  BASENAME="$(basename "${INPUT%.rd}")"
+  OUTPUT="$SLIDES_OUT/${BASENAME}.pdf"
+fi
+
+mkdir -p "$(dirname "$OUTPUT")"
+
+echo "Converting: $INPUT → $OUTPUT"
+rabbit --print --output-filename="$OUTPUT" "$INPUT"
+echo "Done: $OUTPUT"

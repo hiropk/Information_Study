@@ -13,6 +13,11 @@ __pycache__/
 .python-version
 .venv/
 
+# ===== Slides: generated files (source dir only) =====
+slides/**/*.pdf
+slides/**/*.ps
+slides/**/*.png
+
 # ===== Class repo: keep student data private =====
 # Put anything sensitive under these folders.
 private/
