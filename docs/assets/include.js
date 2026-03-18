@@ -19,5 +19,5 @@ async function includePartials() {
   );
 }
 
-includePartials();
+window.partialsReady = includePartials();
 

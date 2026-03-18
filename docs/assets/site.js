@@ -102,22 +102,28 @@ function initMobileNav() {
   });
 }
 
-function initAnnouncementsToggle() {
-  const btn = $("#toggle-announcements");
-  const list = $("#announcements-list");
-  if (!btn || !list) return;
+function initSectionToggles() {
+  const btns = $$(".section-toggle");
+  for (const btn of btns) {
+    const targetId = btn.getAttribute("aria-controls");
+    const target = targetId ? document.getElementById(targetId) : null;
+    if (!target) continue;
 
-  btn.addEventListener("click", () => {
-    const expanded = btn.getAttribute("aria-expanded") === "true";
-    btn.setAttribute("aria-expanded", String(!expanded));
-    btn.textContent = expanded ? "展開する" : "折りたたむ";
-    list.classList.toggle("hidden", expanded);
-  });
+    if (btn.getAttribute("aria-expanded") === "false") {
+      target.classList.add("hidden");
+    }
+
+    btn.addEventListener("click", () => {
+      const expanded = btn.getAttribute("aria-expanded") === "true";
+      btn.setAttribute("aria-expanded", String(!expanded));
+      target.classList.toggle("hidden", expanded);
+    });
+  }
 }
 
-function initScheduleFilter() {
-  const input = $("#filter");
-  const cards = $$("#schedule-cards .card");
+function initCardFilter(inputId, cardSelector) {
+  const input = $(inputId);
+  const cards = $$(cardSelector);
   if (!input || cards.length === 0) return;
 
   const normalize = (s) => s.trim().toLowerCase();
@@ -133,27 +139,25 @@ function initScheduleFilter() {
   });
 }
 
-function initHideDoneAssignments() {
-  const btn = $("#toggle-done");
-  const cards = $$("#assignment-cards .card");
-  if (!btn || cards.length === 0) return;
-
-  btn.addEventListener("click", () => {
-    const pressed = btn.getAttribute("aria-pressed") === "true";
-    btn.setAttribute("aria-pressed", String(!pressed));
-    btn.textContent = pressed ? "提出済みを隠す" : "提出済みを表示";
-    for (const card of cards) {
-      const done = (card.getAttribute("data-status") ?? "") === "done" || card.classList.contains("done");
-      if (done) card.classList.toggle("hidden", !pressed);
-    }
-  });
+function initScheduleFilter() {
+  initCardFilter("#filter", "#schedule-cards .card");
 }
 
+function initAssignmentsFilter() {
+  initCardFilter("#filter-assignments", "#assignment-cards .card");
+}
+
+
+// These functions depend on elements injected by partials (header)
+(window.partialsReady ?? Promise.resolve()).then(() => {
+  initCourseHeaderFromParams();
+  initMobileNav();
+});
+
+// These can run immediately (elements are already in the static HTML)
 initLastUpdated();
 initCourseSelector();
-initCourseHeaderFromParams();
-initMobileNav();
-initAnnouncementsToggle();
+initSectionToggles();
 initScheduleFilter();
-initHideDoneAssignments();
+initAssignmentsFilter();
 
