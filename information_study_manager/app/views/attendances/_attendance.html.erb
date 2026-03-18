@@ -1,0 +1,12 @@
+<tr id="<%= dom_id(attendance) %>">
+  <td class="td-code"><%= attendance.student_code %></td>
+  <td class="td-code td-sub"><%= attendance.lesson_code %></td>
+  <td><%= attendance.date %></td>
+  <td>
+    <span class="badge badge-<%= attendance.status %>">
+      <%= t("attendance.status.#{attendance.status}") %>
+    </span>
+  </td>
+  <td class="td-sub"><%= attendance.comment %></td>
+  <td class="td-sub"><%= attendance.created_at.strftime("%Y-%m-%d %H:%M") %></td>
+</tr>

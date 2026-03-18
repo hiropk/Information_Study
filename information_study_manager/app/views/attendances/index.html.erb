@@ -1,0 +1,80 @@
+<h1 class="page-title">出席一覧</h1>
+
+<div class="panel">
+  <div class="panel-head">
+    <h2>絞り込み</h2>
+    <%= link_to "リセット", attendances_path, class: "btn ghost btn--sm" %>
+  </div>
+  <div class="panel-body">
+    <%= search_form_for @q, url: attendances_path,
+          html: { data: { controller: "autosubmit" } } do |f| %>
+      <div class="filter-form">
+        <div class="filter-row">
+          <div class="filter-field">
+            <%= f.label :student_code_eq, "学籍番号" %>
+            <%= f.select :student_code_eq, @student_codes,
+                  { include_blank: "すべて" },
+                  { data: { action: "change->autosubmit#change" } } %>
+          </div>
+          <div class="filter-field">
+            <%= f.label :lesson_code_eq, "授業コード" %>
+            <%= f.select :lesson_code_eq, @lesson_codes,
+                  { include_blank: "すべて" },
+                  { data: { action: "change->autosubmit#change" } } %>
+          </div>
+        </div>
+        <div class="filter-row filter-row--center">
+          <div class="filter-field filter-field--status">
+            <%= f.label :status_eq, "状態" %>
+            <%= f.select :status_eq,
+                  Attendance.statuses.map { |k, v| [t("attendance.status.#{k}"), v] },
+                  { include_blank: "すべて" },
+                  { data: { action: "change->autosubmit#change" } } %>
+          </div>
+          <div class="filter-field">
+            <%= f.label :date_eq, "授業日" %>
+            <%= f.date_field :date_eq,
+                  data: { action: "change->autosubmit#change" } %>
+          </div>
+          <div class="filter-field">
+            <%= f.label :created_on, "送信日" %>
+            <%= f.date_field :created_on,
+                  data: { action: "change->autosubmit#change" } %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<div class="panel">
+  <div class="panel-head">
+    <h2>レコード一覧</h2>
+    <span style="font-size:13px; color:var(--text-sub);"><%= @attendances.size %> 件</span>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>学籍番号</th>
+          <th>授業コード</th>
+          <th>授業日</th>
+          <th>状態</th>
+          <th>備考</th>
+          <th>送信日時</th>
+        </tr>
+      </thead>
+      <tbody id="attendances-list">
+        <% if @attendances.empty? %>
+          <tr class="empty-row">
+            <td colspan="6">レコードがありません</td>
+          </tr>
+        <% else %>
+          <%= render @attendances %>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<%= turbo_stream_from "attendances" %>
