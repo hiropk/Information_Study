@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <title>授業｜情報</title>
+    <meta name="description" content="高等学校 必修科目「情報」 生徒向けページ" />
+    <link rel="stylesheet" href="./assets/style.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">本文へスキップ</a>
+
+    <header class="site-header">
+      <div class="container header-inner">
+        <div class="brand">
+          <div class="brand-title" id="course-title">
+            <span data-part="subject">情報</span><span class="spacer"> </span
+            ><span data-part="subject-level"></span>
+          </div>
+          <div class="brand-subtitle" id="course-subtitle">
+            <span data-part="year">-</span>・<span data-part="class">-</span>
+          </div>
+        </div>
+        <button
+          class="nav-toggle"
+          type="button"
+          aria-label="メニュー"
+          aria-expanded="false"
+          data-nav-toggle
+        >
+          <svg class="nav-toggle-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M4 7h16M4 12h16M4 17h16" />
+          </svg>
+        </button>
+        <nav class="nav" aria-label="ページ内ナビゲーション" data-nav>
+          <a href="./index.html">選択に戻る</a>
+          <a href="#announcements">お知らせ</a>
+          <a href="#schedule">授業</a>
+          <a href="#assignments">課題</a>
+          <a href="#resources">資料</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main" class="container">
+      <section class="hero hero-centered">
+        <div class="hero-card">
+          <h1 class="hero-title">今日やることがここで分かる</h1>
+          <p class="hero-lead">
+            授業の進度・課題・配布資料をまとめています。内容は随時更新します。
+          </p>
+          <div class="hero-actions">
+            <a class="btn primary" href="#schedule">授業一覧へ</a>
+            <a class="btn" href="#assignments">課題を見る</a>
+          </div>
+        </div>
+      </section>
+
+      <section id="announcements" class="panel">
+        <div class="panel-head">
+          <h2>お知らせ</h2>
+          <button class="chip" type="button" id="toggle-announcements" aria-expanded="true">
+            折りたたむ
+          </button>
+        </div>
+        <ul class="list" id="announcements-list">
+          <li class="list-item">
+            <div class="badge">NEW</div>
+            <div>
+              <div class="item-title">このページを運用開始</div>
+              <div class="item-meta">まずは「授業」「課題」を更新していきます。</div>
+            </div>
+          </li>
+          <li class="list-item">
+            <div class="badge neutral">INFO</div>
+            <div>
+              <div class="item-title">公開してよい内容だけ載せます</div>
+              <div class="item-meta">生徒情報・成績・提出物などは掲載しません。</div>
+            </div>
+          </li>
+        </ul>
+      </section>
+
+      <section id="schedule" class="panel">
+        <div class="panel-head">
+          <h2>授業（進度）</h2>
+          <div class="panel-actions">
+            <input
+              id="filter"
+              class="input"
+              type="search"
+              placeholder="検索（例: データ, ネットワーク, Python）"
+              autocomplete="off"
+            />
+          </div>
+        </div>
+
+        <div class="cards" id="schedule-cards">
+          <article class="card" data-tags="導入 情報モラル ルール">
+            <div class="card-top">
+              <div class="pill">第1回</div>
+              <div class="card-title">ガイダンス／学び方とルール</div>
+            </div>
+            <div class="card-body">
+              <ul class="mini">
+                <li>この授業で扱う範囲</li>
+                <li>提出・評価の考え方</li>
+                <li>情報モラルの基本</li>
+              </ul>
+            </div>
+            <div class="card-foot">
+              <a class="link" href="#assignments">課題を見る →</a>
+            </div>
+          </article>
+
+          <article class="card" data-tags="データ 活用 表計算 可視化">
+            <div class="card-top">
+              <div class="pill">第2回</div>
+              <div class="card-title">データの見方／表とグラフ</div>
+            </div>
+            <div class="card-body">
+              <ul class="mini">
+                <li>平均・中央値・外れ値</li>
+                <li>適切なグラフ選び</li>
+                <li>読み手に伝わる可視化</li>
+              </ul>
+            </div>
+            <div class="card-foot">
+              <span class="muted">資料は準備中</span>
+            </div>
+          </article>
+
+          <article class="card" data-tags="ネットワーク セキュリティ 暗号 認証">
+            <div class="card-top">
+              <div class="pill">第3回</div>
+              <div class="card-title">ネットワークと安全</div>
+            </div>
+            <div class="card-body">
+              <ul class="mini">
+                <li>パスワードと多要素認証</li>
+                <li>HTTPSの考え方</li>
+                <li>フィッシング対策</li>
+              </ul>
+            </div>
+            <div class="card-foot">
+              <span class="muted">資料は準備中</span>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="assignments" class="panel">
+        <div class="panel-head">
+          <h2>課題</h2>
+          <div class="panel-actions">
+            <button class="chip" type="button" id="toggle-done" aria-pressed="false">
+              提出済みを隠す
+            </button>
+          </div>
+        </div>
+
+        <div class="cards" id="assignment-cards">
+          <article class="card" data-status="open" data-due="未定">
+            <div class="card-top">
+              <div class="pill warn">提出</div>
+              <div class="card-title">課題0：自己紹介（学習環境チェック）</div>
+            </div>
+            <div class="card-body">
+              <div class="kv">
+                <div class="k">締切</div>
+                <div class="v">未定（授業で案内）</div>
+              </div>
+              <div class="kv">
+                <div class="k">内容</div>
+                <div class="v">タイピング・ファイル操作・簡単なルール確認</div>
+              </div>
+            </div>
+            <div class="card-foot">
+              <span class="muted">詳細は授業で配布</span>
+            </div>
+          </article>
+
+          <article class="card done" data-status="done" data-due="-">
+            <div class="card-top">
+              <div class="pill ok">完了</div>
+              <div class="card-title">（例）提出物の表示サンプル</div>
+            </div>
+            <div class="card-body">
+              <div class="kv">
+                <div class="k">メモ</div>
+                <div class="v">「提出済みを隠す」ボタンで非表示にできます。</div>
+              </div>
+            </div>
+            <div class="card-foot">
+              <span class="muted">サンプル</span>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="resources" class="panel">
+        <div class="panel-head">
+          <h2>資料（公開してよいもの）</h2>
+        </div>
+        <div class="resources">
+          <a class="resource" href="./resources/" aria-disabled="true">
+            <div class="resource-title">配布資料フォルダ</div>
+            <div class="resource-meta">`docs/resources/` に置いたPDF等を公開できます</div>
+          </a>
+          <a class="resource" href="./links.html">
+            <div class="resource-title">リンク集</div>
+            <div class="resource-meta">授業で使うサイトをまとめる</div>
+          </a>
+        </div>
+        <p class="note">
+          注意: 生徒情報・成績・提出物は、この公開サイト（`docs/`）に置かないでください。
+        </p>
+      </section>
+    </main>
+
+    <div data-include="./partials/footer.html"></div>
+
+    <script src="./assets/include.js"></script>
+    <script src="./assets/site.js"></script>
+  </body>
+</html>
+

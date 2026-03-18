@@ -1,0 +1,32 @@
+# ===== OS / Editor =====
+.DS_Store
+.vscode/
+.idea/
+
+# ===== Node / Python (if used later) =====
+node_modules/
+dist/
+.env
+.env.*
+__pycache__/
+.pytest_cache/
+.python-version
+.venv/
+
+# ===== Class repo: keep student data private =====
+# Put anything sensitive under these folders.
+private/
+students/
+submissions/
+grades/
+roster/
+attendance/
+
+# Common sensitive file patterns
+**/*名簿*
+**/*成績*
+**/*出席*
+**/*個人情報*
+**/*個票*
+**/*答案*
+
