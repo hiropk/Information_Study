@@ -1,0 +1,10 @@
+ja:
+  attendance:
+    status:
+      present:  "出席"
+      absent:   "欠席"
+      late:     "遅刻"
+      early:    "早退"
+      excused:  "公欠"
+      bereaved: "忌引き"
+      other:    "その他"
