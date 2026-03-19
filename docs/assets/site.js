@@ -33,7 +33,8 @@ function initCourseSelector() {
 
   // Default to current year if present as an option
   const currentYear = String(new Date().getFullYear());
-  if (year && Array.from(year.options).some((o) => o.value === currentYear)) year.value = currentYear;
+  if (year && Array.from(year.options).some((o) => o.value === currentYear))
+    year.value = currentYear;
 
   form.addEventListener("submit", (e) => {
     e.preventDefault();
@@ -147,12 +148,78 @@ function initAssignmentsFilter() {
   initCardFilter("#filter-assignments", "#assignment-cards .card");
 }
 
-
 // These functions depend on elements injected by partials (header)
 (window.partialsReady ?? Promise.resolve()).then(() => {
   initCourseHeaderFromParams();
   initMobileNav();
 });
+
+function initAttendanceForm() {
+  const form = $("#attendance-form");
+  if (!form) return;
+
+  const API_URL = "http://localhost:3001/api/v1/attendances";
+
+  const { year, subject, className } = getParams();
+  const lessonCode =
+    [year, subject, className].filter(Boolean).join("-") || "unknown";
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const submitBtn = $("#att-submit");
+    const msg = $("#att-msg");
+    const studentCode = $("#att-student-code").value.trim();
+    const status = $("#att-status").value;
+    const comment = $("#att-comment").value.trim();
+
+    if (!studentCode) {
+      showMsg(msg, "error", "学籍番号を入力してください。");
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = "送信中…";
+    msg.className = "attendance-msg hidden";
+
+    try {
+      const res = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          attendance: {
+            student_code: studentCode,
+            lesson_code: lessonCode,
+            date: formatDate(new Date()),
+            status,
+            comment: comment || null,
+          },
+        }),
+      });
+
+      const data = await res.json();
+      if (res.ok && data.status === "ok") {
+        showMsg(msg, "ok", "出席を記録しました。");
+        form.reset();
+      } else {
+        const errors = Array.isArray(data.message)
+          ? data.message.join(" / ")
+          : data.message;
+        showMsg(msg, "error", `エラー: ${errors}`);
+      }
+    } catch {
+      showMsg(msg, "error", "サーバーに接続できませんでした。");
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = "送信";
+    }
+  });
+
+  function showMsg(el, type, text) {
+    el.textContent = text;
+    el.className = `attendance-msg ${type}`;
+  }
+}
 
 // These can run immediately (elements are already in the static HTML)
 initLastUpdated();
@@ -160,4 +227,4 @@ initCourseSelector();
 initSectionToggles();
 initScheduleFilter();
 initAssignmentsFilter();
-
+initAttendanceForm();
