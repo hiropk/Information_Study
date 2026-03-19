@@ -36,18 +36,50 @@
             >
           </button>
         </div>
-        <div class="attendance-embed hidden" id="attendance-body">
-          <iframe
-            src="https://docs.google.com/forms/d/e/1FAIpQLScuGZBZ-YVQW6Dff0Va5odSgsEH-pbAgwqVu1O1IIpaJOlRNw/viewform?embedded=true"
-            width="100%"
-            height="600"
-            frameborder="0"
-            marginheight="0"
-            marginwidth="0"
-            title="出席管理フォーム"
-            loading="lazy"
-            >読み込んでいます…</iframe
-          >
+        <div class="hidden" id="attendance-body">
+          <form class="attendance-form" id="attendance-form" novalidate>
+            <div class="attendance-fields">
+              <div class="attendance-field">
+                <label class="selector-label" for="att-student-code">学籍番号</label>
+                <input
+                  class="input"
+                  id="att-student-code"
+                  name="student_code"
+                  type="text"
+                  placeholder="例: 2-1-01"
+                  autocomplete="off"
+                  required
+                />
+              </div>
+              <div class="attendance-field">
+                <label class="selector-label" for="att-status">状態</label>
+                <select class="select" id="att-status" name="status" required>
+                  <option value="present">出席</option>
+                  <option value="absent">欠席</option>
+                  <option value="late">遅刻</option>
+                  <option value="early">早退</option>
+                  <option value="excused">公欠</option>
+                  <option value="bereaved">忌引き</option>
+                  <option value="other">その他</option>
+                </select>
+              </div>
+              <div class="attendance-field attendance-field--comment">
+                <label class="selector-label" for="att-comment">備考（任意）</label>
+                <textarea
+                  class="input attendance-textarea"
+                  id="att-comment"
+                  name="comment"
+                  placeholder="例: 体調不良のため見学"
+                  autocomplete="off"
+                  rows="2"
+                ></textarea>
+              </div>
+            </div>
+            <div class="attendance-actions">
+              <button class="btn primary" type="submit" id="att-submit">送信</button>
+            </div>
+            <p class="attendance-msg hidden" id="att-msg" role="alert"></p>
+          </form>
         </div>
       </section>
 

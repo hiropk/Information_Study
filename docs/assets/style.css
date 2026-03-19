@@ -570,16 +570,54 @@ section[id] { scroll-margin-top: var(--header-h); }
 }
 
 /* ─── Attendance embed ──────────────────────────────────── */
-.attendance-embed {
-  padding: 14px;
+.attendance-form {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
-.attendance-embed iframe {
-  display: block;
+.attendance-form .input {
   width: 100%;
-  min-height: 600px;
-  border: 1px solid var(--border);
+}
+.attendance-fields {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 16px;
+  align-items: flex-end;
+}
+.attendance-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1 1 160px;
+}
+.attendance-field--comment {
+  flex: 0 0 100%;
+}
+.attendance-textarea {
+  width: 100%;
+  resize: vertical;
+  height: auto;
+  min-height: 60px;
+  line-height: 1.5;
+}
+.attendance-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+.attendance-msg {
+  margin: 0;
+  padding: 10px 14px;
   border-radius: var(--radius);
-  background: var(--bg-sub);
+  font-size: 14px;
+}
+.attendance-msg.ok {
+  background: var(--ok-bg);
+  color: var(--ok);
+}
+.attendance-msg.error {
+  background: var(--warn-bg);
+  color: var(--warn);
 }
 
 /* ─── Utility ───────────────────────────────────────────── */
