@@ -1,5 +1,12 @@
 <h1 class="page-title">出席一覧</h1>
 
+<% if notice.present? %>
+  <div class="flash flash--notice"><%= notice %></div>
+<% end %>
+<% if alert.present? %>
+  <div class="flash flash--alert"><%= alert %></div>
+<% end %>
+
 <div class="panel">
   <div class="panel-head">
     <h2>絞り込み</h2>
@@ -47,12 +54,94 @@
   </div>
 </div>
 
-<%= form_with url: bulk_destroy_attendances_path, method: :post,
-      data: { controller: "select-all" } do |f| %>
-  <div class="panel">
-    <div class="panel-head">
-      <h2>レコード一覧</h2>
-      <span style="font-size:13px; color:var(--text-sub);"><%= @attendances.size %> 件</span>
+<div class="panel">
+  <div class="panel-head">
+    <h2>レコード一覧</h2>
+    <span style="font-size:13px; color:var(--text-sub);"><%= @attendances.size %> 件</span>
+    <div data-controller="report-confirm">
+      <%= form_with url: attendance_reports_path, method: :post,
+            class: "inline-form",
+            data: { report_confirm_target: "form" } do |f| %>
+        <% @q_params.each do |key, value| %>
+          <%= hidden_field_tag "q[#{key}]", value %>
+        <% end %>
+        <button type="button"
+                class="btn ghost btn--sm"
+                data-action="click->report-confirm#open">レポート送信</button>
+      <% end %>
+
+      <div data-report-confirm-target="modal"
+           class="modal-overlay hidden"
+           data-action="click->report-confirm#backdropClose">
+        <div class="modal" data-action="click->report-confirm#stopPropagation">
+          <h3 class="modal-title">レポート送信の確認</h3>
+          <p class="modal-desc">以下の条件でメールを送信します。よろしいですか？</p>
+          <dl class="modal-summary">
+            <dt>学籍番号</dt>
+            <dd><%= @q_params[:student_code_eq].presence || "すべて" %></dd>
+            <dt>授業コード</dt>
+            <dd><%= @q_params[:lesson_code_eq].presence || "すべて" %></dd>
+            <dt>状態</dt>
+            <dd>
+              <% if (sv = @q_params[:status_eq]).present? %>
+                <% key = Attendance.statuses.key(sv.to_i) %>
+                <%= key ? t("attendance.status.#{key}") : "すべて" %>
+              <% else %>
+                すべて
+              <% end %>
+            </dd>
+            <dt>授業日</dt>
+            <dd><%= @q_params[:date_eq].presence || "指定なし" %></dd>
+            <dt>送信日</dt>
+            <dd><%= @q_params[:created_on].presence || "指定なし" %></dd>
+            <dt>対象件数</dt>
+            <dd><strong><%= @attendances.size %> 件</strong></dd>
+          </dl>
+
+          <div class="modal-records">
+            <table class="modal-records-table">
+              <thead>
+                <tr>
+                  <th>学籍番号</th>
+                  <th>授業コード</th>
+                  <th>授業日</th>
+                  <th>状態</th>
+                  <th>備考</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @attendances_ordered.each do |a| %>
+                  <tr>
+                    <td class="td-code"><%= a.student_code %></td>
+                    <td class="td-code td-sub"><%= a.lesson_code %></td>
+                    <td><%= a.date %></td>
+                    <td>
+                      <span class="badge badge-<%= a.status %>">
+                        <%= t("attendance.status.#{a.status}") %>
+                      </span>
+                    </td>
+                    <td class="td-sub"><%= a.comment %></td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+          <div class="modal-actions">
+            <button type="button"
+                    class="btn ghost"
+                    data-action="click->report-confirm#close">キャンセル</button>
+            <button type="button"
+                    class="btn primary"
+                    data-action="click->report-confirm#send">送信する</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <%= form_with url: bulk_destroy_attendances_path, method: :post,
+        data: { controller: "select-all" } do |f| %>
+    <div class="panel-head panel-head--sub">
       <button
         type="submit"
         class="btn ghost btn--sm btn--danger"
@@ -91,7 +180,7 @@
         </tbody>
       </table>
     </div>
-  </div>
-<% end %>
+  <% end %>
+</div>
 
 <%= turbo_stream_from "attendances" %>

@@ -62,4 +62,6 @@ end
 group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
+  # .env ファイルから環境変数を読み込む
+  gem "dotenv-rails"
 end
