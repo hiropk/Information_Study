@@ -1,4 +1,14 @@
 <tr id="<%= dom_id(attendance) %>">
+  <td class="td-check">
+    <input
+      type="checkbox"
+      name="attendance_ids[]"
+      value="<%= attendance.id %>"
+      class="row-check"
+      data-select-all-target="checkbox"
+      data-action="change->select-all#updateToggle"
+    />
+  </td>
   <td class="td-code"><%= attendance.student_code %></td>
   <td class="td-code td-sub"><%= attendance.lesson_code %></td>
   <td><%= attendance.date %></td>
@@ -9,4 +19,14 @@
   </td>
   <td class="td-sub"><%= attendance.comment %></td>
   <td class="td-sub"><%= attendance.created_at.strftime("%Y-%m-%d %H:%M") %></td>
+  <td class="td-action">
+    <%= link_to attendance_path(attendance),
+          data: { turbo_method: :delete, turbo_confirm: "このレコードを削除しますか？" },
+          class: "btn-icon btn-icon--danger",
+          aria: { label: "削除" } do %>
+      <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+        <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+      </svg>
+    <% end %>
+  </td>
 </tr>
