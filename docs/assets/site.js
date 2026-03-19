@@ -164,6 +164,12 @@ function initAttendanceForm() {
   const lessonCode =
     [year, subject, className].filter(Boolean).join("-") || "unknown";
 
+  const studentCodeInput = $("#att-student-code");
+  if (studentCodeInput && className) {
+    studentCodeInput.value = `${className}-`;
+    studentCodeInput.placeholder = `例: ${className}-01`;
+  }
+
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
