@@ -1,0 +1,94 @@
+#!/usr/bin/env bash
+# Usage: bin/serve
+# Rails サーバーを ngrok 経由で公開し、フォームのリクエスト先 URL を自動更新してコミット・push する
+
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+RAILS_DIR="$REPO_ROOT/information_study_manager"
+SITE_JS="$REPO_ROOT/docs/assets/site.js"
+RAILS_PORT=3001
+
+# ── 1. Rails サーバー起動 ────────────────────────────────
+echo "→ Rails サーバーを起動中 (port $RAILS_PORT)..."
+cd "$RAILS_DIR"
+bundle exec rails s -p "$RAILS_PORT" &
+RAILS_PID=$!
+
+# Rails が起動するまで少し待つ
+sleep 3
+
+# ── 2. ngrok 起動 ────────────────────────────────────────
+echo "→ ngrok を起動中 (port $RAILS_PORT)..."
+ngrok http "$RAILS_PORT" --log=stdout > /tmp/ngrok.log 2>&1 &
+NGROK_PID=$!
+
+# ── 3. ngrok URL を取得 ──────────────────────────────────
+echo "→ ngrok の準備待ち..."
+NGROK_URL=""
+for i in $(seq 1 20); do
+  sleep 1
+  NGROK_URL=$(curl -s http://localhost:4040/api/tunnels 2>/dev/null \
+    | python3 -c "
+import sys, json
+try:
+  d = json.load(sys.stdin)
+  url = next((t['public_url'] for t in d.get('tunnels', []) if t['proto'] == 'https'), '')
+  print(url)
+except Exception:
+  print('')
+" 2>/dev/null || true)
+  if [ -n "$NGROK_URL" ]; then
+    break
+  fi
+done
+
+if [ -z "$NGROK_URL" ]; then
+  echo "✗ ngrok URL の取得に失敗しました。ngrok がインストールされているか確認してください。"
+  kill "$RAILS_PID" "$NGROK_PID" 2>/dev/null || true
+  exit 1
+fi
+
+echo "→ ngrok URL: $NGROK_URL"
+
+# ── 4. site.js の API_URL を更新 ─────────────────────────
+NEW_API_URL="${NGROK_URL}/api/v1/attendances"
+echo "→ site.js を更新: $NEW_API_URL"
+sed -i '' "s|const API_URL = \".*\";|const API_URL = \"$NEW_API_URL\";|" "$SITE_JS"
+
+# ── 5. 差分確認・コミット・push ──────────────────────────
+cd "$REPO_ROOT"
+
+echo ""
+echo "─── git diff ───────────────────────────────────────────"
+git diff docs/assets/site.js
+echo "────────────────────────────────────────────────────────"
+echo ""
+
+if git diff --quiet docs/assets/site.js; then
+  echo "→ URL に変更なし。コミットをスキップします。"
+else
+  git add docs/assets/site.js
+  git commit -m "chore: APIリクエスト先を ngrok URL に更新 ($(date +%Y-%m-%d))"
+  git push origin main
+  echo "→ コミット・push 完了"
+fi
+
+# ── 6. 起動情報を表示 ────────────────────────────────────
+echo ""
+echo "✓ 起動完了！"
+echo "  管理画面:  http://localhost:$RAILS_PORT"
+echo "  公開 URL:  $NGROK_URL"
+echo ""
+echo "Ctrl+C で停止します"
+
+# ── 7. Ctrl+C で両プロセスを停止 ─────────────────────────
+cleanup() {
+  echo ""
+  echo "→ 停止中..."
+  kill "$RAILS_PID" "$NGROK_PID" 2>/dev/null || true
+  echo "→ 完了"
+}
+trap cleanup INT TERM
+wait "$RAILS_PID"
