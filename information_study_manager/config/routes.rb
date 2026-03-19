@@ -7,6 +7,8 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :attendance_reports, only: %i[create]
+
   namespace :api do
     namespace :v1 do
       resources :attendances, only: %i[create]

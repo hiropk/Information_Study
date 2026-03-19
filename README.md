@@ -49,3 +49,5 @@ bin/rd2pdf slides/01_xxx/xxx.rd docs/slides/xxx.pdf
 - `private/`: 配布前資料・作業メモなど
 - `students/`, `submissions/`, `grades/`: 生徒情報・提出物・成績（**絶対に公開しない**）
 
+infomation_study_manager
+afyr ymwh umiz xuki

@@ -1,0 +1,13 @@
+送信日時: <%= @sent_at.strftime("%Y-%m-%d %H:%M") %>
+<% if @q_params[:date_eq].present? %>授業日: <%= @q_params[:date_eq] %>
+<% end %><% if @q_params[:lesson_code_eq].present? %>授業コード: <%= @q_params[:lesson_code_eq] %>
+<% end %><% if @q_params[:student_code_eq].present? %>学籍番号: <%= @q_params[:student_code_eq] %>
+<% end %>件数: <%= @attendances.size %> 件
+
+------------------------------------------------------------------------
+学籍番号       授業コード              授業日        状態          備考
+------------------------------------------------------------------------
+<% @attendances.each do |a| %>
+<%= a.student_code.ljust(14) %><%= a.lesson_code.ljust(24) %><%= a.date.to_s.ljust(14) %><%= I18n.t("attendance.status.#{a.status}").ljust(12) %><%= a.comment.to_s %>
+<% end %>
+------------------------------------------------------------------------
