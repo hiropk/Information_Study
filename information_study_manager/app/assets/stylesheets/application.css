@@ -270,6 +270,45 @@ tbody td {
 .badge-bereaved { background: var(--bg-sub2);     color: var(--text-sub);}
 .badge-other    { background: var(--bg-sub2);     color: var(--text-sub);}
 
+/* ─── Checkbox column ───────────────────────────────────── */
+.th-check, .td-check {
+  width: 36px;
+  padding: 10px 8px 10px 14px;
+  text-align: center;
+}
+.row-check {
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
+  accent-color: var(--primary);
+}
+
+/* ─── Action column ─────────────────────────────────────── */
+.td-action {
+  width: 40px;
+  padding: 6px 10px;
+  text-align: center;
+}
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius);
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: background .15s, color .15s;
+  color: var(--text-sub);
+  text-decoration: none;
+}
+.btn-icon svg { width: 16px; height: 16px; }
+.btn-icon:hover { background: var(--bg-sub2); color: var(--text); }
+.btn-icon--danger:hover { background: var(--danger-bg); color: var(--danger); }
+.btn--danger { color: var(--danger); border-color: currentColor; }
+.btn--danger:hover { background: var(--danger-bg); }
+
 /* ─── Empty state ───────────────────────────────────────── */
 .empty-row td {
   text-align: center;

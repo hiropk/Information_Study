@@ -7,4 +7,19 @@ class AttendancesController < ApplicationController
     @student_codes = Attendance.distinct.order(:student_code).pluck(:student_code)
     @lesson_codes  = Attendance.distinct.order(:lesson_code).pluck(:lesson_code)
   end
+
+  def destroy
+    @attendance = Attendance.find(params[:id])
+    @attendance.destroy
+    respond_to do |format|
+      format.turbo_stream { render turbo_stream: turbo_stream.remove(helpers.dom_id(@attendance)) }
+      format.html { redirect_to attendances_path }
+    end
+  end
+
+  def bulk_destroy
+    ids = Array(params[:attendance_ids]).map(&:to_i)
+    Attendance.where(id: ids).destroy_all if ids.any?
+    redirect_to attendances_path
+  end
 end

@@ -1,7 +1,11 @@
 Rails.application.routes.draw do
   root "attendances#index"
 
-  resources :attendances, only: %i[index]
+  resources :attendances, only: %i[index destroy] do
+    collection do
+      post :bulk_destroy
+    end
+  end
 
   namespace :api do
     namespace :v1 do
