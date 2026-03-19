@@ -52,10 +52,16 @@ fi
 
 echo "→ ngrok URL: $NGROK_URL"
 
-# ── 4. site.js の API_URL を更新 ─────────────────────────
+# ── 4. site.js の API_URL を更新 + キャッシュバスティング ─
 NEW_API_URL="${NGROK_URL}/api/v1/attendances"
+VERSION="$(date +%Y%m%d%H%M%S)"
+COURSE_HTML="$REPO_ROOT/docs/course.html"
+
 echo "→ site.js を更新: $NEW_API_URL"
 sed -i '' "s|const API_URL = \".*\";|const API_URL = \"$NEW_API_URL\";|" "$SITE_JS"
+
+echo "→ course.html のキャッシュバスティングを更新: ?v=$VERSION"
+sed -i '' "s|site\.js?v=[^\"]*|site.js?v=$VERSION|" "$COURSE_HTML"
 
 # ── 5. 差分確認・コミット・push ──────────────────────────
 cd "$REPO_ROOT"
@@ -66,11 +72,11 @@ git diff docs/assets/site.js
 echo "────────────────────────────────────────────────────────"
 echo ""
 
-if git diff --quiet docs/assets/site.js; then
+if git diff --quiet docs/assets/site.js docs/course.html; then
   echo "→ URL に変更なし。コミットをスキップします。"
 else
-  git add docs/assets/site.js
-  git commit -m "chore: APIリクエスト先を ngrok URL に更新 ($(date +%Y-%m-%d))"
+  git add docs/assets/site.js docs/course.html
+  git commit -m "chore: APIリクエスト先を ngrok URL に更新 ($(date +%Y-%m-%d %H:%M:%S))"
   git push origin main
   echo "→ コミット・push 完了"
 fi
