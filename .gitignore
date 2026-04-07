@@ -2,6 +2,7 @@
 .DS_Store
 .vscode/
 .idea/
+.cursor/
 
 # ===== Node / Python (if used later) =====
 node_modules/
