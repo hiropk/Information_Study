@@ -40,14 +40,47 @@ bin/rd2pdf slides/01_xxx/xxx.rd docs/slides/xxx.pdf
 ```
 
 > `slides/` 以下の `.pdf` は `.gitignore` で除外済み。
-> `docs/slides/` に出力した PDF はコミット対象になり、公開サイトから参照できます。
+> `docs/assets/slides/` に出力した PDF はコミット対象になり、公開サイトから参照できます。
+
+## 出席管理サーバー（information_study_manager）
+
+Rails アプリ。授業中に生徒が出席を送信する API サーバー。
+
+### 起動方法
+
+```bash
+# Rails + ngrok を一発起動（URL 自動更新・コミット・push まで全部やる）
+bin/serve
+```
+
+### 初回セットアップ
+
+```bash
+cd information_study_manager
+bundle install
+rails db:migrate
+cp .env.sample .env   # .env に Gmail 設定を書く
+```
+
+### 環境変数（.env）
+
+`.env.sample` をコピーして `.env` を作り、以下を設定する。
+
+```
+GMAIL_ADDRESS=your_address@gmail.com
+GMAIL_PASSWORD=xxxx xxxx xxxx xxxx   # Google アプリパスワード（16桁）
+REPORT_TO=recipient@example.com
+```
+
+> `.env` は `.gitignore` 済みなので **絶対にコミットしない**。
+
+---
 
 ## フォルダ方針（おすすめ）
 
 - `docs/`: 生徒に公開してよい内容だけ置く
+- `docs/assets/slides/`: PDF 化したスライド（公開対象）
 - `slides/`: 授業スライドのソース（RD形式）
+- `information_study_manager/`: 出席管理 Rails アプリ
 - `private/`: 配布前資料・作業メモなど
 - `students/`, `submissions/`, `grades/`: 生徒情報・提出物・成績（**絶対に公開しない**）
-
-infomation_study_manager
-afyr ymwh umiz xuki
