@@ -591,6 +591,9 @@ section[id] { scroll-margin-top: var(--header-h); }
   gap: 6px;
   flex: 1 1 160px;
 }
+.attendance-field--narrow {
+  flex: 0 0 80px;
+}
 .attendance-field--comment {
   flex: 0 0 100%;
 }

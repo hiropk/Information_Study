@@ -39,17 +39,51 @@
         <div class="hidden" id="attendance-body">
           <form class="attendance-form" id="attendance-form" action="javascript:void(0)" novalidate>
             <div class="attendance-fields">
-              <div class="attendance-field">
-                <label class="selector-label" for="att-student-code">学籍番号</label>
-                <input
-                  class="input"
-                  id="att-student-code"
-                  name="student_code"
-                  type="text"
-                  placeholder="例: 2-1-01"
-                  autocomplete="off"
-                  required
-                />
+              <div class="attendance-field attendance-field--narrow">
+                <label class="selector-label" for="att-student-code">出席番号</label>
+                <select class="select" id="att-student-code" name="student_code" required>
+                  <option value="">--</option>
+                  <option value="01">1</option>
+                  <option value="02">2</option>
+                  <option value="03">3</option>
+                  <option value="04">4</option>
+                  <option value="05">5</option>
+                  <option value="06">6</option>
+                  <option value="07">7</option>
+                  <option value="08">8</option>
+                  <option value="09">9</option>
+                  <option value="10">10</option>
+                  <option value="11">11</option>
+                  <option value="12">12</option>
+                  <option value="13">13</option>
+                  <option value="14">14</option>
+                  <option value="15">15</option>
+                  <option value="16">16</option>
+                  <option value="17">17</option>
+                  <option value="18">18</option>
+                  <option value="19">19</option>
+                  <option value="20">20</option>
+                  <option value="21">21</option>
+                  <option value="22">22</option>
+                  <option value="23">23</option>
+                  <option value="24">24</option>
+                  <option value="25">25</option>
+                  <option value="26">26</option>
+                  <option value="27">27</option>
+                  <option value="28">28</option>
+                  <option value="29">29</option>
+                  <option value="30">30</option>
+                  <option value="31">31</option>
+                  <option value="32">32</option>
+                  <option value="33">33</option>
+                  <option value="34">34</option>
+                  <option value="35">35</option>
+                  <option value="36">36</option>
+                  <option value="37">37</option>
+                  <option value="38">38</option>
+                  <option value="39">39</option>
+                  <option value="40">40</option>
+                </select>
               </div>
               <div class="attendance-field">
                 <label class="selector-label" for="att-status">状態</label>
@@ -108,15 +142,6 @@
               </div>
             </div>
           </li>
-          <li class="list-item">
-            <div class="badge neutral">INFO</div>
-            <div>
-              <div class="item-title">公開してよい内容だけ載せます</div>
-              <div class="item-meta">
-                生徒情報・成績・提出物などは掲載しません。
-              </div>
-            </div>
-          </li>
         </ul>
       </section>
 
@@ -160,40 +185,6 @@
             </div>
             <div class="card-foot">
               <a class="link" href="#assignments">課題を見る →</a>
-            </div>
-          </article>
-
-          <article class="card" data-tags="データ 活用 表計算 可視化">
-            <div class="card-top">
-              <div class="pill">第2回</div>
-              <div class="card-title">データの見方／表とグラフ</div>
-            </div>
-            <div class="card-body">
-              <ul class="mini">
-                <li>平均・中央値・外れ値</li>
-                <li>適切なグラフ選び</li>
-                <li>読み手に伝わる可視化</li>
-              </ul>
-            </div>
-            <div class="card-foot">
-              <span class="muted">資料は準備中</span>
-            </div>
-          </article>
-
-          <article class="card" data-tags="ネットワーク セキュリティ 暗号 認証">
-            <div class="card-top">
-              <div class="pill">第3回</div>
-              <div class="card-title">ネットワークと安全</div>
-            </div>
-            <div class="card-body">
-              <ul class="mini">
-                <li>パスワードと多要素認証</li>
-                <li>HTTPSの考え方</li>
-                <li>フィッシング対策</li>
-              </ul>
-            </div>
-            <div class="card-foot">
-              <span class="muted">資料は準備中</span>
             </div>
           </article>
         </div>
@@ -249,29 +240,6 @@
               <span class="muted">詳細は授業で配布</span>
             </div>
           </article>
-
-          <article
-            class="card done"
-            data-status="done"
-            data-due="-"
-            data-tags="サンプル 完了"
-          >
-            <div class="card-top">
-              <div class="pill ok">完了</div>
-              <div class="card-title">（例）提出物の表示サンプル</div>
-            </div>
-            <div class="card-body">
-              <div class="kv">
-                <div class="k">メモ</div>
-                <div class="v">
-                  「提出済みを隠す」ボタンで非表示にできます。
-                </div>
-              </div>
-            </div>
-            <div class="card-foot">
-              <span class="muted">サンプル</span>
-            </div>
-          </article>
         </div>
       </section>
 
@@ -294,7 +262,7 @@
           <div class="resources">
             <a
               class="resource"
-              href="../slides/_sample/sample.pdf"
+              href="assets/slides/sample.pdf"
               target="_blank"
               rel="noopener"
             >

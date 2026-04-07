@@ -165,22 +165,20 @@ function initAttendanceForm() {
     [year, subject, className].filter(Boolean).join("-") || "unknown";
 
   const studentCodeInput = $("#att-student-code");
-  if (studentCodeInput && className) {
-    studentCodeInput.value = `${className}-`;
-    studentCodeInput.placeholder = `例: ${className}-01`;
-  }
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
     const submitBtn = $("#att-submit");
     const msg = $("#att-msg");
-    const studentCode = $("#att-student-code").value.trim();
+    const studentCode = studentCodeInput.value
+      ? `${className}-${studentCodeInput.value}`
+      : "";
     const status = $("#att-status").value;
     const comment = $("#att-comment").value.trim();
 
     if (!studentCode) {
-      showMsg(msg, "error", "学籍番号を入力してください。");
+      showMsg(msg, "error", "番号を選択してください。");
       return;
     }
 

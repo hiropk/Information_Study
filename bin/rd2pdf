@@ -14,7 +14,7 @@ if [ $# -eq 0 ]; then
   exit 1
 fi
 
-INPUT="$1"
+INPUT="$(cd "$(dirname "$1")" && pwd)/$(basename "$1")"
 
 if [ ! -f "$INPUT" ]; then
   echo "Error: file not found: $INPUT" >&2
@@ -22,7 +22,7 @@ if [ ! -f "$INPUT" ]; then
 fi
 
 if [ $# -ge 2 ]; then
-  OUTPUT="$2"
+  OUTPUT="$(cd "$(dirname "$2")" && pwd)/$(basename "$2")"
 else
   BASENAME="$(basename "${INPUT%.rd}")"
   OUTPUT="$SLIDES_OUT/${BASENAME}.pdf"
@@ -31,5 +31,5 @@ fi
 mkdir -p "$(dirname "$OUTPUT")"
 
 echo "Converting: $INPUT → $OUTPUT"
-rabbit --print --output-filename="$OUTPUT" "$INPUT"
+cd "$REPO_ROOT/slides" && bundle exec rabbit --print --size=1024,768 --output-filename="$OUTPUT" "$INPUT"
 echo "Done: $OUTPUT"
