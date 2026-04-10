@@ -13,7 +13,7 @@ RAILS_PORT=3001
 # ── 1. Rails サーバー起動 ────────────────────────────────
 echo "→ Rails サーバーを起動中 (port $RAILS_PORT)..."
 cd "$RAILS_DIR"
-bundle exec rails s -p "$RAILS_PORT" &
+RAILS_ENV=production bundle exec rails s -p "$RAILS_PORT" &
 RAILS_PID=$!
 
 # Rails が起動するまで少し待つ
