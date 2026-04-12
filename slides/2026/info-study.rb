@@ -46,3 +46,13 @@ match(TitleSlide, Date) do |dates|
   dates.prop_set("size", SIZE * 0.8)
   dates.prop_set("foreground", "#718096")
 end
+
+match(Slide, DescriptionTerm) do |terms|
+  terms.prop_set("size", SIZE * 0.9)
+  terms.prop_set("weight", "bold")
+  terms.prop_set("foreground", "#2b6cb0")
+end
+
+match(Slide, DescriptionContent) do |contents|
+  contents.prop_set("size", SIZE * 0.85)
+end
