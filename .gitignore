@@ -14,6 +14,9 @@ __pycache__/
 .python-version
 .venv/
 
+# ===== 教科書データ（著作権保護のため共有しない） =====
+study_materials/
+
 # ===== test_generator: OAuth secrets =====
 test_generator/credentials.json
 test_generator/token.json

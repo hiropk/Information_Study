@@ -53,6 +53,7 @@ function parseMd(content) {
   let inStudent = false;
 
   for (const line of lines) {
+    if (line.startsWith('//')) continue;
     if (line.startsWith('> ') && !current && !inStudent) {
       description = line.slice(2).trim();
     } else if (line === '[student]') {
