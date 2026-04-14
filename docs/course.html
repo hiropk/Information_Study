@@ -146,51 +146,6 @@
         </ul>
       </section>
 
-      <section id="schedule" class="panel">
-        <div class="panel-head">
-          <h2>授業</h2>
-          <div class="panel-actions">
-            <input
-              id="filter"
-              class="input"
-              type="search"
-              placeholder="検索（例: データ, ネットワーク, Python）"
-              autocomplete="off"
-            />
-            <button
-              class="section-toggle"
-              type="button"
-              aria-expanded="true"
-              aria-controls="schedule-cards"
-              aria-label="授業を折りたたむ"
-            >
-              <span class="material-symbols-outlined" aria-hidden="true"
-                >expand_more</span
-              >
-            </button>
-          </div>
-        </div>
-
-        <div class="cards" id="schedule-cards">
-          <article class="card" data-tags="導入 情報モラル ルール">
-            <div class="card-top">
-              <div class="pill">第1回</div>
-              <div class="card-title">ガイダンス／学び方とルール</div>
-            </div>
-            <div class="card-body">
-              <ul class="mini">
-                <li>この授業で扱う範囲</li>
-                <li>提出・評価の考え方</li>
-                <li>情報モラルの基本</li>
-              </ul>
-            </div>
-            <div class="card-foot">
-              <a class="link" href="#assignments">課題を見る →</a>
-            </div>
-          </article>
-        </div>
-      </section>
-
       <section id="assignments" class="panel">
         <div class="panel-head">
           <h2>課題</h2>
@@ -244,6 +199,57 @@
         </div>
       </section>
 
+      <section id="quizzes" class="panel">
+        <div class="panel-head">
+          <h2>確認テスト</h2>
+          <button
+            class="section-toggle"
+            type="button"
+            aria-expanded="true"
+            aria-controls="quiz-cards"
+            aria-label="確認テストを折りたたむ"
+          >
+            <span class="material-symbols-outlined" aria-hidden="true"
+              >expand_more</span
+            >
+          </button>
+        </div>
+
+        <div class="cards" id="quiz-cards">
+          <article
+            class="card"
+            data-status="open"
+            data-tags="情報 情報社会 確認テスト 1章1節"
+          >
+            <div class="card-top">
+              <div class="pill">テスト</div>
+              <div class="card-title">1章1節｜情報と情報社会 確認テスト</div>
+            </div>
+            <div class="card-body">
+              <div class="kv">
+                <div class="k">出題数</div>
+                <div class="v">10問 × 10点（100点満点）</div>
+              </div>
+              <div class="kv">
+                <div class="k">目安時間</div>
+                <div class="v">10分</div>
+              </div>
+              <div class="kv">
+                <div class="k">内容</div>
+                <div class="v">情報の定義・社会の変遷・AI/IoT・情報の性質・SNSリテラシー</div>
+              </div>
+            </div>
+            <div class="card-foot">
+              <a
+                href="https://docs.google.com/forms/d/16LSAdrhCg994gjNewRCeiEt_SMWZtGVVdL4Recx5Acw/viewform"
+                target="_blank"
+                rel="noopener"
+              >フォームを開く →</a>
+            </div>
+          </article>
+        </div>
+      </section>
+
       <section id="resources" class="panel">
         <div class="panel-head">
           <h2>資料</h2>
@@ -276,6 +282,15 @@
             >
               <div class="resource-title">4/15授業ガイダンス</div>
               <div class="resource-meta">初回の授業で話した自己紹介とか</div>
+            </a>
+            <a
+              class="resource"
+              href="assets/slides/ch01-sec01.pdf"
+              target="_blank"
+              rel="noopener"
+            >
+              <div class="resource-title">1章1節｜情報と情報社会</div>
+              <div class="resource-meta">情報の定義・社会の変遷・AI/IoT・情報の性質・SNSリテラシー</div>
             </a>
           </div>
         </div>
