@@ -23,4 +23,30 @@ class AttendancesController < ApplicationController
     Attendance.where(id: ids).destroy_all if ids.any?
     redirect_to attendances_path
   end
+
+  def bulk_create
+    lesson_code   = params[:lesson_code].to_s.strip
+    date          = params[:date].to_s.strip
+    status        = params[:status].to_s.strip
+    comment       = params[:comment].to_s.strip
+    student_codes = Array(params[:student_codes]).map(&:to_s).map(&:strip).reject(&:empty?)
+
+    created = 0
+    skipped = 0
+
+    student_codes.each do |code|
+      record = Attendance.new(
+        student_code: code,
+        lesson_code:  lesson_code,
+        date:         date,
+        status:       status,
+        comment:      comment.presence
+      )
+      record.save ? created += 1 : skipped += 1
+    end
+
+    msg = "#{created} 件の出席レコードを作成しました。"
+    msg += "（#{skipped} 件はすでに存在するためスキップしました）" if skipped > 0
+    redirect_to attendances_path, notice: msg
+  end
 end
