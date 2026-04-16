@@ -58,6 +58,127 @@
   <div class="panel-head">
     <h2>レコード一覧</h2>
     <span style="font-size:13px; color:var(--text-sub);"><%= @attendances.size %> 件</span>
+
+    <%# ─── 一括作成ボタン＆モーダル ─── %>
+    <div data-controller="bulk-create">
+      <button type="button"
+              class="btn ghost btn--sm"
+              data-action="click->bulk-create#open">一括作成</button>
+
+      <div data-bulk-create-target="modal"
+           class="modal-overlay hidden"
+           data-action="click->bulk-create#backdropClose">
+        <div class="modal" data-action="click->bulk-create#stopPropagation">
+
+          <%# ── STEP 1: 入力フォーム ── %>
+          <div data-bulk-create-target="step1">
+            <h3 class="modal-title">出席レコードの一括作成</h3>
+            <p class="modal-desc">出席番号は「1-40」や「1,5,10」など範囲・個別・組み合わせで入力できます。</p>
+            <div class="bulk-create-form">
+              <div class="bulk-create-row">
+                <div class="filter-field">
+                  <label for="bc-lesson-code">授業コード</label>
+                  <input id="bc-lesson-code"
+                         type="text"
+                         list="bc-lesson-code-list"
+                         placeholder="例: 25R-INFO-01"
+                         required
+                         data-bulk-create-target="lessonCode">
+                  <datalist id="bc-lesson-code-list">
+                    <% @lesson_codes.each do |code| %>
+                      <option value="<%= code %>">
+                    <% end %>
+                  </datalist>
+                </div>
+                <div class="filter-field filter-field--date">
+                  <label for="bc-date">授業日</label>
+                  <input id="bc-date"
+                         type="date"
+                         value="<%= Date.current.iso8601 %>"
+                         required
+                         data-bulk-create-target="date">
+                </div>
+              </div>
+              <div class="bulk-create-row">
+                <div class="filter-field">
+                  <label for="bc-student-codes">出席番号</label>
+                  <input id="bc-student-codes"
+                         type="text"
+                         placeholder="例: 1-40 または 1,3,5,10-15"
+                         required
+                         data-bulk-create-target="studentCodes">
+                </div>
+                <div class="filter-field filter-field--status">
+                  <label for="bc-status">状態</label>
+                  <select id="bc-status" required data-bulk-create-target="status">
+                    <% Attendance.statuses.each_key do |key| %>
+                      <option value="<%= key %>" <%= "selected" if key == "present" %>>
+                        <%= t("attendance.status.#{key}") %>
+                      </option>
+                    <% end %>
+                  </select>
+                </div>
+              </div>
+              <div class="bulk-create-row">
+                <div class="filter-field">
+                  <label for="bc-comment">備考（任意）</label>
+                  <input id="bc-comment"
+                         type="text"
+                         placeholder="メモがあれば"
+                         data-bulk-create-target="comment">
+                </div>
+              </div>
+            </div>
+            <div class="modal-actions">
+              <button type="button"
+                      class="btn ghost"
+                      data-action="click->bulk-create#close">キャンセル</button>
+              <button type="button"
+                      class="btn primary"
+                      data-action="click->bulk-create#preview">プレビュー →</button>
+            </div>
+          </div>
+
+          <%# ── STEP 2: 確認プレビュー ── %>
+          <div data-bulk-create-target="step2" style="display:none">
+            <h3 class="modal-title">作成内容の確認</h3>
+            <p class="modal-desc">
+              以下 <strong data-bulk-create-target="previewCount"></strong> 件のレコードを作成します。よろしいですか？
+            </p>
+            <div class="bulk-create-records">
+              <table class="modal-records-table">
+                <thead>
+                  <tr>
+                    <th>学籍番号</th>
+                    <th>授業コード</th>
+                    <th>授業日</th>
+                    <th>状態</th>
+                    <th>備考</th>
+                  </tr>
+                </thead>
+                <tbody data-bulk-create-target="previewBody"></tbody>
+              </table>
+            </div>
+
+            <%= form_with url: bulk_create_attendances_path,
+                          method: :post,
+                          data: { bulk_create_target: "form" } do %>
+            <% end %>
+
+            <div class="modal-actions">
+              <button type="button"
+                      class="btn ghost"
+                      data-action="click->bulk-create#back">← 戻る</button>
+              <button type="button"
+                      class="btn primary"
+                      data-action="click->bulk-create#send">作成する</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
     <div data-controller="report-confirm">
       <%= form_with url: attendance_reports_path, method: :post,
             class: "inline-form",

@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   resources :attendances, only: %i[index destroy] do
     collection do
       post :bulk_destroy
+      post :bulk_create
     end
   end
 
