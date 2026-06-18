@@ -473,6 +473,17 @@ section[id] { scroll-margin-top: var(--header-h); }
 }
 .list-item:hover { background: var(--bg-sub2); }
 
+.list-item--link { cursor: pointer; }
+.list-item--link:hover { background: var(--bg-sub2); }
+.list-item-anchor {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  width: 100%;
+  color: inherit;
+  text-decoration: none;
+}
+
 .badge {
   font-size: 10px;
   font-weight: 800;
