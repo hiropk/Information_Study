@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "export": "node export.js"
+    "export": "node export.js",
+    "template": "node slides_template.js"
   },
   "keywords": [],
   "author": "",
