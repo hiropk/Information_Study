@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RGB・ラスタ形式とベクタ形式デモ</title>
+  <style>
+    :root {
+      --bg: #0f1419;
+      --panel: #1a2332;
+      --panel2: #243044;
+      --text: #e8eef6;
+      --muted: #9aacbf;
+      --accent: #4db6ff;
+      --border: #334155;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+      background: radial-gradient(1200px 600px at 10% -10%, #1b2a44 0%, var(--bg) 55%);
+      color: var(--text);
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    header {
+      padding: 28px 24px 8px;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: clamp(1.4rem, 3vw, 2rem);
+      letter-spacing: 0.02em;
+    }
+
+    header p {
+      color: var(--muted);
+      margin-top: 6px;
+      font-size: 0.95rem;
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 16px 20px 64px;
+      display: grid;
+      gap: 28px;
+    }
+
+    section {
+      background: linear-gradient(180deg, var(--panel), #15202e);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 22px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+    }
+
+    section h2 {
+      font-size: 1.25rem;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    section h2 .badge {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #041018;
+      background: var(--accent);
+      border-radius: 999px;
+      padding: 2px 10px;
+    }
+
+    .lead {
+      color: var(--muted);
+      margin-bottom: 18px;
+      font-size: 0.95rem;
+    }
+
+    /* ===== RGB ===== */
+    .rgb-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 800px) {
+      .rgb-grid { grid-template-columns: 1fr; }
+    }
+
+    .preview-box {
+      border-radius: 14px;
+      min-height: 220px;
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 16px;
+      transition: background 0.08s linear;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .preview-box .meta {
+      background: rgba(0, 0, 0, 0.45);
+      backdrop-filter: blur(4px);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.92rem;
+      line-height: 1.55;
+    }
+
+    .sliders label {
+      display: grid;
+      grid-template-columns: 28px 1fr 48px;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 12px;
+      font-weight: 700;
+    }
+
+    .sliders input[type="range"] {
+      width: 100%;
+      accent-color: currentColor;
+    }
+
+    .sliders .r { color: #ff5b5b; }
+    .sliders .g { color: #45d483; }
+    .sliders .b { color: #4da3ff; }
+
+    .presets {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .presets button {
+      border: 1px solid var(--border);
+      background: var(--panel2);
+      color: var(--text);
+      border-radius: 999px;
+      padding: 6px 12px;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+
+    .presets button:hover { border-color: var(--accent); }
+
+    /* 加法混色 */
+    .mix-wrap {
+      margin-top: 22px;
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 18px;
+      align-items: center;
+    }
+
+    @media (max-width: 800px) {
+      .mix-wrap { grid-template-columns: 1fr; }
+    }
+
+    .venn {
+      width: 260px;
+      height: 260px;
+      margin: 0 auto;
+      position: relative;
+      isolation: isolate;
+    }
+
+    .venn .c {
+      position: absolute;
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      mix-blend-mode: screen;
+      opacity: 0.95;
+    }
+
+    .venn .red { background: #ff0000; left: 55px; top: 20px; }
+    .venn .green { background: #00ff00; left: 20px; top: 90px; }
+    .venn .blue { background: #0000ff; left: 90px; top: 90px; }
+
+    .mix-notes {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      font-size: 0.92rem;
+    }
+
+    .mix-notes ul { margin-left: 1.2em; }
+    .mix-notes li { margin: 4px 0; }
+    .swatch {
+      display: inline-block;
+      width: 0.9em;
+      height: 0.9em;
+      border-radius: 3px;
+      vertical-align: -1px;
+      margin-right: 4px;
+      border: 1px solid rgba(255,255,255,0.25);
+    }
+
+    /* ===== Raster / Vector ===== */
+    .compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    @media (max-width: 800px) {
+      .compare { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+    }
+
+    .card h3 {
+      font-size: 1.05rem;
+      margin-bottom: 6px;
+    }
+
+    .card .sub {
+      color: var(--muted);
+      font-size: 0.88rem;
+      margin-bottom: 12px;
+    }
+
+    .stage {
+      background: #0b1220;
+      border-radius: 10px;
+      border: 1px dashed #3b4a63;
+      height: 280px;
+      overflow: hidden;
+      position: relative;
+      display: grid;
+      place-items: center;
+    }
+
+    .stage canvas,
+    .stage svg {
+      transform-origin: center center;
+      transition: transform 0.2s ease;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin-top: 12px;
+    }
+
+    .controls button,
+    .zoom-btn {
+      background: var(--accent);
+      color: #041018;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .controls button.secondary {
+      background: var(--panel2);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .zoom-label {
+      color: var(--muted);
+      font-size: 0.9rem;
+      min-width: 4.5em;
+    }
+
+    .tips {
+      margin-top: 16px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    @media (max-width: 800px) {
+      .tips { grid-template-columns: 1fr; }
+    }
+
+    .tip {
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 0.9rem;
+      border: 1px solid var(--border);
+    }
+
+    .tip.raster { background: rgba(255, 91, 91, 0.08); }
+    .tip.vector { background: rgba(77, 182, 255, 0.08); }
+
+    footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.85rem;
+      padding-bottom: 28px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>RGB・ラスタ形式とベクタ形式デモ</h1>
+    <p>情報Ⅰ　静止画と動画の表現｜授業用サンプル（ブラウザでそのまま開ける）</p>
+  </header>
+
+  <main>
+    <!-- ========== RGB ========== -->
+    <section>
+      <h2><span class="badge">DEMO 1</span> 光の三原色（RGB）</h2>
+      <p class="lead">
+        ディスプレイは <strong>R（赤）・G（緑）・B（青）</strong> の明るさを 0〜255 で混ぜて色を作る（加法混色）。
+        スライダーを動かして、CSS の <code>rgb()</code> / カラーコードがどう変わるか見てみよう。
+      </p>
+
+      <div class="rgb-grid">
+        <div>
+          <div id="colorPreview" class="preview-box" style="background: rgb(34, 163, 145);">
+            <div class="meta" id="colorMeta">
+              CSS: rgb(34, 163, 145)<br>
+              カラーコード: #22a391<br>
+              約1677万色のうちの1色
+            </div>
+          </div>
+        </div>
+
+        <div class="sliders">
+          <label class="r">R
+            <input id="r" type="range" min="0" max="255" value="34">
+            <span id="rv">34</span>
+          </label>
+          <label class="g">G
+            <input id="g" type="range" min="0" max="255" value="163">
+            <span id="gv">163</span>
+          </label>
+          <label class="b">B
+            <input id="b" type="range" min="0" max="255" value="145">
+            <span id="bv">145</span>
+          </label>
+
+          <div class="presets">
+            <button type="button" data-rgb="255,0,0">赤</button>
+            <button type="button" data-rgb="0,255,0">緑</button>
+            <button type="button" data-rgb="0,0,255">青</button>
+            <button type="button" data-rgb="255,255,0">イエロー</button>
+            <button type="button" data-rgb="0,255,255">シアン</button>
+            <button type="button" data-rgb="255,0,255">マゼンタ</button>
+            <button type="button" data-rgb="255,255,255">白</button>
+            <button type="button" data-rgb="0,0,0">黒</button>
+            <button type="button" data-rgb="34,163,145">教科書の例</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="mix-wrap">
+        <div class="venn" aria-hidden="true">
+          <div class="c red"></div>
+          <div class="c green"></div>
+          <div class="c blue"></div>
+        </div>
+        <div class="mix-notes">
+          <strong>加法混色（CSS の mix-blend-mode: screen）</strong>
+          <ul>
+            <li><span class="swatch" style="background:#ffff00"></span>R + G → イエロー</li>
+            <li><span class="swatch" style="background:#00ffff"></span>G + B → シアン</li>
+            <li><span class="swatch" style="background:#ff00ff"></span>R + B → マゼンタ</li>
+            <li><span class="swatch" style="background:#ffffff"></span>R + G + B → 白</li>
+          </ul>
+          <p style="margin-top:8px;color:var(--muted);font-size:0.88rem;">
+            1画素あたり R/G/B 各8ビット → 合計24ビットフルカラー（256³ = 16,777,216色）
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== Raster / Vector ========== -->
+    <section>
+      <h2><span class="badge">DEMO 2</span> ラスタ形式 vs ベクタ形式</h2>
+      <p class="lead">
+        左は画素の集まり（ラスタ＝ペイント系）、右は数式・座標で描く図形（ベクタ＝ドロー系）。
+        同じ「円＋星」を拡大してみると、ジャギーの違いが一発でわかる。
+      </p>
+
+      <div class="compare">
+        <div class="card">
+          <h3>ラスタ形式（Canvas / 画素）</h3>
+          <p class="sub">JPEG・PNG・GIF など。拡大するとギザギザ（ジャギー）が出る。</p>
+          <div class="stage">
+            <canvas id="rasterCanvas" width="160" height="160"></canvas>
+          </div>
+          <div class="controls">
+            <button type="button" class="zoom-btn" data-target="raster" data-delta="-1">−</button>
+            <span class="zoom-label" id="rasterZoomLabel">×1</span>
+            <button type="button" class="zoom-btn" data-target="raster" data-delta="1">＋</button>
+            <button type="button" class="secondary" id="redrawLowRes">低解像度で描き直し</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>ベクタ形式（SVG / 数式）</h3>
+          <p class="sub">AI・SVG など。拡大しても理論上はなめらか（座標を再計算）。</p>
+          <div class="stage">
+            <svg id="vectorSvg" width="160" height="160" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+              <rect width="160" height="160" fill="#0b1220"/>
+              <circle cx="80" cy="80" r="52" fill="none" stroke="#4db6ff" stroke-width="8"/>
+              <polygon
+                points="80,28 92,62 128,62 99,84 110,118 80,97 50,118 61,84 32,62 68,62"
+                fill="#ffd166"
+                stroke="#f4a261"
+                stroke-width="3"
+                stroke-linejoin="round"/>
+              <text x="80" y="148" text-anchor="middle" fill="#9aacbf" font-size="12" font-family="sans-serif">SVG</text>
+            </svg>
+          </div>
+          <div class="controls">
+            <button type="button" class="zoom-btn" data-target="vector" data-delta="-1">−</button>
+            <span class="zoom-label" id="vectorZoomLabel">×1</span>
+            <button type="button" class="zoom-btn" data-target="vector" data-delta="1">＋</button>
+            <button type="button" class="secondary" id="resetZooms">拡大率リセット</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="tips">
+        <div class="tip raster">
+          <strong>ラスタ向き</strong>：写真、細かい陰影のある画像。<br>
+          データ量は画素数×色深度に比例しやすい。
+        </div>
+        <div class="tip vector">
+          <strong>ベクタ向き</strong>：ロゴ、アイコン、図形、地図の線。<br>
+          中心座標・半径などの数値だけなので小さく保てることも多い。
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    授業デモ用｜ローカルで index を開くだけでOK（外部ライブラリなし）
+  </footer>
+
+  <script>
+    // ----- RGB -----
+    const r = document.getElementById("r");
+    const g = document.getElementById("g");
+    const b = document.getElementById("b");
+    const rv = document.getElementById("rv");
+    const gv = document.getElementById("gv");
+    const bv = document.getElementById("bv");
+    const preview = document.getElementById("colorPreview");
+    const meta = document.getElementById("colorMeta");
+
+    function toHex(n) {
+      return Number(n).toString(16).padStart(2, "0");
+    }
+
+    function updateColor() {
+      const R = +r.value, G = +g.value, B = +b.value;
+      rv.textContent = R;
+      gv.textContent = G;
+      bv.textContent = B;
+      const css = `rgb(${R}, ${G}, ${B})`;
+      const hex = `#${toHex(R)}${toHex(G)}${toHex(B)}`;
+      preview.style.background = css;
+      meta.innerHTML =
+        `CSS: ${css}<br>` +
+        `カラーコード: ${hex}<br>` +
+        `24ビットフルカラー（各色 0〜255）`;
+    }
+
+    [r, g, b].forEach((el) => el.addEventListener("input", updateColor));
+
+    document.querySelectorAll(".presets button").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const [R, G, B] = btn.dataset.rgb.split(",").map(Number);
+        r.value = R; g.value = G; b.value = B;
+        updateColor();
+      });
+    });
+
+    updateColor();
+
+    // ----- Raster drawing -----
+    const canvas = document.getElementById("rasterCanvas");
+    const ctx = canvas.getContext("2d");
+
+    function drawRasterScene(size) {
+      canvas.width = size;
+      canvas.height = size;
+      // nearest-neighbor っぽく見せる（拡大時にぼやけない＝ジャギーが見える）
+      canvas.style.imageRendering = "pixelated";
+
+      ctx.fillStyle = "#0b1220";
+      ctx.fillRect(0, 0, size, size);
+
+      const s = size / 160;
+      ctx.strokeStyle = "#4db6ff";
+      ctx.lineWidth = Math.max(2, 8 * s);
+      ctx.beginPath();
+      ctx.arc(80 * s, 80 * s, 52 * s, 0, Math.PI * 2);
+      ctx.stroke();
+
+      const pts = [80,28, 92,62, 128,62, 99,84, 110,118, 80,97, 50,118, 61,84, 32,62, 68,62];
+      ctx.beginPath();
+      ctx.moveTo(pts[0] * s, pts[1] * s);
+      for (let i = 2; i < pts.length; i += 2) {
+        ctx.lineTo(pts[i] * s, pts[i + 1] * s);
+      }
+      ctx.closePath();
+      ctx.fillStyle = "#ffd166";
+      ctx.fill();
+      ctx.strokeStyle = "#f4a261";
+      ctx.lineWidth = Math.max(1, 3 * s);
+      ctx.stroke();
+
+      ctx.fillStyle = "#9aacbf";
+      ctx.font = `${Math.max(8, 12 * s)}px sans-serif`;
+      ctx.textAlign = "center";
+      ctx.fillText("Raster", 80 * s, 148 * s);
+    }
+
+    // わざと低めの解像度で描いて、拡大時のジャギーを強調
+    drawRasterScene(64);
+
+    const zoom = { raster: 1, vector: 1 };
+    const maxZoom = 8;
+    const minZoom = 1;
+
+    function applyZoom(target) {
+      const el = target === "raster" ? canvas : document.getElementById("vectorSvg");
+      el.style.transform = `scale(${zoom[target]})`;
+      document.getElementById(target + "ZoomLabel").textContent = `×${zoom[target]}`;
+    }
+
+    document.querySelectorAll(".zoom-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const t = btn.dataset.target;
+        const d = +btn.dataset.delta;
+        zoom[t] = Math.min(maxZoom, Math.max(minZoom, zoom[t] + d));
+        applyZoom(t);
+      });
+    });
+
+    document.getElementById("redrawLowRes").addEventListener("click", () => {
+      drawRasterScene(48);
+      zoom.raster = 1;
+      applyZoom("raster");
+    });
+
+    document.getElementById("resetZooms").addEventListener("click", () => {
+      zoom.raster = 1;
+      zoom.vector = 1;
+      applyZoom("raster");
+      applyZoom("vector");
+    });
+  </script>
+</body>
+</html>
