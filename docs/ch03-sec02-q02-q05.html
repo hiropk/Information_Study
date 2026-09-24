@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>確認問題2〜5｜解答（2進数の計算・補数・浮動小数点数）</title>
+  <style>
+    :root {
+      --bg: #0f1419;
+      --panel: #1a2332;
+      --panel2: #243044;
+      --text: #e8eef6;
+      --muted: #9aacbf;
+      --accent: #4db6ff;
+      --accent2: #45d483;
+      --warn: #ffb74d;
+      --pink: #f48fb1;
+      --border: #334155;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+      background: radial-gradient(1200px 600px at 10% -10%, #1b2a44 0%, var(--bg) 55%);
+      color: var(--text);
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    header { padding: 28px 24px 8px; text-align: center; }
+
+    header h1 {
+      font-size: clamp(1.35rem, 3vw, 1.9rem);
+      letter-spacing: 0.02em;
+    }
+
+    header p { color: var(--muted); margin-top: 6px; font-size: 0.95rem; }
+
+    nav.toc {
+      max-width: 980px;
+      margin: 12px auto 0;
+      padding: 0 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    nav.toc a {
+      color: var(--accent);
+      text-decoration: none;
+      border: 1px solid var(--border);
+      background: rgba(77, 182, 255, 0.08);
+      border-radius: 999px;
+      padding: 6px 14px;
+      font-size: 0.9rem;
+    }
+
+    nav.toc a:hover { text-decoration: underline; }
+
+    main {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 16px 20px 64px;
+      display: grid;
+      gap: 24px;
+    }
+
+    section {
+      background: linear-gradient(180deg, var(--panel), #15202e);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 22px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+    }
+
+    section h2 {
+      font-size: 1.2rem;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #041018;
+      background: var(--accent);
+      border-radius: 999px;
+      padding: 2px 10px;
+    }
+
+    .badge.green { background: var(--accent2); }
+    .badge.orange { background: var(--warn); }
+    .badge.pink { background: var(--pink); }
+
+    .lead { color: var(--muted); margin-bottom: 16px; font-size: 0.95rem; }
+
+    .card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-top: 12px;
+    }
+
+    .card h3 { font-size: 1rem; margin-bottom: 8px; }
+
+    ul.plain { margin-left: 1.2em; }
+    ul.plain li { margin: 4px 0; }
+
+    .mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.92rem;
+    }
+
+    .hl { color: var(--accent); font-weight: 700; }
+    .hl2 { color: var(--accent2); font-weight: 700; }
+    .hlw { color: var(--warn); font-weight: 700; }
+
+    .steps { display: grid; gap: 14px; margin-top: 8px; }
+
+    .step {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      background: rgba(255,255,255,0.02);
+    }
+
+    .step-head {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 14px;
+      align-items: center;
+      padding: 10px 14px;
+      background: rgba(77, 182, 255, 0.08);
+      border-bottom: 1px solid var(--border);
+      font-weight: 700;
+    }
+
+    .step-body { padding: 12px 14px; font-size: 0.95rem; }
+
+    .mini { color: var(--muted); font-size: 0.88rem; }
+
+    .calc {
+      font-family: ui-monospace, Menlo, Consolas, monospace;
+      background: #0b1220;
+      border: 1px dashed #3b4a63;
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-top: 12px;
+      line-height: 1.85;
+      overflow-x: auto;
+      white-space: pre;
+    }
+
+    .answer-box {
+      margin-top: 12px;
+      padding: 16px 18px;
+      border-radius: 12px;
+      border: 1px solid rgba(69, 212, 131, 0.45);
+      background: rgba(69, 212, 131, 0.1);
+    }
+
+    .answer-box .big {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--accent2);
+      line-height: 1.8;
+    }
+
+    table.summary {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 0.92rem;
+    }
+
+    table.summary th,
+    table.summary td {
+      border: 1px solid var(--border);
+      padding: 8px 10px;
+      text-align: left;
+    }
+
+    table.summary th {
+      background: rgba(255,255,255,0.04);
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    table.summary td.num,
+    .bits {
+      font-family: ui-monospace, Menlo, Consolas, monospace;
+    }
+
+    .bitrow {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+      margin-top: 10px;
+    }
+
+    .bit {
+      min-width: 1.7em;
+      height: 1.9em;
+      display: grid;
+      place-items: center;
+      border-radius: 6px;
+      border: 1px solid #3b4a63;
+      background: #0b1220;
+      font-family: ui-monospace, Menlo, Consolas, monospace;
+      font-weight: 700;
+    }
+
+    .bit.s { border-color: var(--pink); color: var(--pink); }
+    .bit.e { border-color: var(--accent); color: var(--accent); }
+    .bit.m { border-color: var(--accent2); color: var(--accent2); }
+
+    .legend-dot {
+      display: inline-block;
+      width: 0.7em;
+      height: 0.7em;
+      border-radius: 2px;
+      margin-right: 4px;
+      vertical-align: 0;
+    }
+
+    .legend-dot.s { background: var(--pink); }
+    .legend-dot.e { background: var(--accent); }
+    .legend-dot.m { background: var(--accent2); }
+
+    footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.85rem;
+      padding-bottom: 28px;
+    }
+
+    a.back { color: var(--accent); text-decoration: none; }
+    a.back:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>確認問題2〜5｜解答</h1>
+    <p>情報Ⅰ　3章2節　数値の計算｜2進数の加減・補数・浮動小数点数</p>
+  </header>
+
+  <nav class="toc" aria-label="目次">
+    <a href="#q2">確認問題2</a>
+    <a href="#q3">確認問題3</a>
+    <a href="#q4">確認問題4</a>
+    <a href="#q5">確認問題5</a>
+  </nav>
+
+  <main>
+    <section>
+      <h2><span class="badge">先に</span>この節の約束</h2>
+      <div class="card">
+        <ul class="plain">
+          <li>2進数の1桁：0＋0＝0、0＋1＝1、1＋1＝0 で繰り上げ1、1＋1＋1＝1 で繰り上げ1</li>
+          <li>減算は 0−1 のとき左の桁から借りる。借りるとその桁は「2」になるので、2−1＝1</li>
+          <li>この教科書の補数は、<strong>足すと1桁増える最も小さな数</strong>（nビットなら、足すと 1 のあとに 0 が n 個）</li>
+          <li>求め方の手順：各ビットを反転して、最後に 1 を足す（桁数は揃えたまま）</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Q2 -->
+    <section id="q2">
+      <h2><span class="badge">問題</span>確認問題2</h2>
+      <p class="lead">次の4ビットの2進数を計算する。答えも4ビット。</p>
+      <table class="summary">
+        <thead>
+          <tr><th></th><th>式</th><th>10進で見ると</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>（1）</td><td class="num">0011(2) ＋ 1001(2)</td><td>3 ＋ 9 ＝ 12</td></tr>
+          <tr><td>（2）</td><td class="num">0111(2) ＋ 0001(2)</td><td>7 ＋ 1 ＝ 8</td></tr>
+          <tr><td>（3）</td><td class="num">1010(2) − 0010(2)</td><td>10 − 2 ＝ 8</td></tr>
+          <tr><td>（4）</td><td class="num">1100(2) − 0011(2)</td><td>12 − 3 ＝ 9</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2><span class="badge orange">手順</span>確認問題2　筆算</h2>
+      <div class="steps">
+        <article class="step">
+          <div class="step-head"><span>（1）0011 ＋ 1001</span><span class="mini">繰り上げあり</span></div>
+          <div class="step-body">
+            <div class="calc">繰り上げ     1 1
+            0 0 1 1
+         ＋ 1 0 0 1
+         -----------
+            1 1 0 0</div>
+            <ul class="plain">
+              <li>右端：1＋1＝0、繰り上げ1</li>
+              <li>次：1＋0＋（繰り上げ1）＝0、繰り上げ1</li>
+              <li>次：0＋0＋1＝1</li>
+              <li>左端：0＋1＝1</li>
+            </ul>
+            <div class="answer-box">
+              <div>解答（1）</div>
+              <div class="big">1100(2)</div>
+              <p class="mini">検算：3＋9＝12。12＝8＋4＝1100(2)</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="step">
+          <div class="step-head"><span>（2）0111 ＋ 0001</span><span class="mini">繰り上げが3回続く</span></div>
+          <div class="step-body">
+            <div class="calc">繰り上げ   1 1 1
+            0 1 1 1
+         ＋ 0 0 0 1
+         -----------
+            1 0 0 0</div>
+            <ul class="plain">
+              <li>右から：1＋1＝0 繰り上げ、1＋1＝0 繰り上げ、1＋1＝0 繰り上げ、0＋1＝1</li>
+              <li>0111 は 7。＋1 すると 1000（＝8）になる</li>
+            </ul>
+            <div class="answer-box">
+              <div>解答（2）</div>
+              <div class="big">1000(2)</div>
+            </div>
+          </div>
+        </article>
+
+        <article class="step">
+          <div class="step-head"><span>（3）1010 − 0010</span><span class="mini">借りなくて済む</span></div>
+          <div class="step-body">
+            <div class="calc">            1 0 1 0
+         − 0 0 1 0
+         -----------
+            1 0 0 0</div>
+            <p class="mini">右から 0−0、1−1、0−0、1−0。どの桁も借りない。</p>
+            <div class="answer-box">
+              <div>解答（3）</div>
+              <div class="big">1000(2)</div>
+              <p class="mini">検算：10−2＝8＝1000(2)</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="step">
+          <div class="step-head"><span>（4）1100 − 0011</span><span class="mini">借りが2桁続く</span></div>
+          <div class="step-body">
+            <p>右端の 0−1 ができない。その左も 0 なので、さらに左の 1 から借りる。</p>
+            <div class="calc">もとの上の数     1  1  0  0
+借りたあと        1  0  1  (2)
+引く数         −  0  0  1  1
+              ----------------------
+結果              1  0  0  1</div>
+            <ul class="plain">
+              <li>2<sup>2</sup> の桁の 1 を、右へ貸すので 0 になる</li>
+              <li>2<sup>1</sup> の桁は借りたあと 2 になり、さらに右端へ 1 を貸すので残るのは 1。そこから 1 を引いて 0</li>
+              <li>右端は借りて 2 になり、2−1＝1</li>
+              <li>左端の 1 はそのまま 1−0＝1</li>
+            </ul>
+            <div class="answer-box">
+              <div>解答（4）</div>
+              <div class="big">1001(2)</div>
+              <p class="mini">検算：12−3＝9＝8＋1＝1001(2)</p>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <div class="answer-box">
+        <div>確認問題2　解答まとめ</div>
+        <div class="big">
+          （1）1100(2)<br>
+          （2）1000(2)<br>
+          （3）1000(2)<br>
+          （4）1001(2)
+        </div>
+      </div>
+    </section>
+
+    <!-- Q3 -->
+    <section id="q3">
+      <h2><span class="badge">問題</span>確認問題3</h2>
+      <p class="lead">
+        次の補数を求める。補数は「足すと、1 のあとに 0 がその桁数ぶん続く数」。
+        <strong>先頭の 0 も桁に数える。</strong>
+      </p>
+      <table class="summary">
+        <thead>
+          <tr><th></th><th>もとの数</th><th>桁数</th><th>足すとこうなる</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>（1）</td><td class="num">1101(2)</td><td>4ビット</td><td class="num">10000(2)</td></tr>
+          <tr><td>（2）</td><td class="num">10001(2)</td><td>5ビット</td><td class="num">100000(2)</td></tr>
+          <tr><td>（3）</td><td class="num">0000111(2)</td><td>7ビット</td><td class="num">10000000(2)</td></tr>
+          <tr><td>（4）</td><td class="num">001100(2)</td><td>6ビット</td><td class="num">1000000(2)</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2><span class="badge orange">手順</span>確認問題3　反転して ＋1</h2>
+      <p class="lead">例題3の 0100(2) → 反転 1011 → ＋1 で 1100(2)。0100＋1100＝10000 になるのと同じやり方。</p>
+
+      <div class="steps">
+        <article class="step">
+          <div class="step-head"><span>（1）1101　4ビット</span></div>
+          <div class="step-body">
+            <div class="calc">もとの数   1 1 0 1
+反転       0 0 1 0
+＋1             1
+           -------
+補数       0 0 1 1
+
+検算  1101 ＋ 0011 ＝ 10000</div>
+            <div class="answer-box"><div>解答（1）</div><div class="big">0011(2)</div></div>
+          </div>
+        </article>
+
+        <article class="step">
+          <div class="step-head"><span>（2）10001　5ビット</span></div>
+          <div class="step-body">
+            <div class="calc">もとの数   1 0 0 0 1
+反転       0 1 1 1 0
+＋1               1
+           ---------
+補数       0 1 1 1 1
+
+検算  10001 ＋ 01111 ＝ 100000</div>
+            <div class="answer-box"><div>解答（2）</div><div class="big">01111(2)</div></div>
+          </div>
+        </article>
+
+        <article class="step">
+          <div class="step-head"><span>（3）0000111　7ビット</span><span class="mini">先頭の0を落とさない</span></div>
+          <div class="step-body">
+            <div class="calc">もとの数   0 0 0 0 1 1 1
+反転       1 1 1 1 0 0 0
+＋1                     1
+           ---------------
+補数       1 1 1 1 0 0 1
+
+検算  0000111 ＋ 1111001 ＝ 10000000</div>
+            <p class="mini">3ビットの 111 だと思って反転すると 001 になり、桁が合わない。書いてある桁数のまま反転する。</p>
+            <div class="answer-box"><div>解答（3）</div><div class="big">1111001(2)</div></div>
+          </div>
+        </article>
+
+        <article class="step">
+          <div class="step-head"><span>（4）001100　6ビット</span></div>
+          <div class="step-body">
+            <div class="calc">もとの数   0 0 1 1 0 0
+反転       1 1 0 0 1 1
+＋1                   1
+           -------------
+補数       1 1 0 1 0 0
+
+検算  001100 ＋ 110100 ＝ 1000000</div>
+            <div class="answer-box"><div>解答（4）</div><div class="big">110100(2)</div></div>
+          </div>
+        </article>
+      </div>
+
+      <div class="answer-box">
+        <div>確認問題3　解答まとめ</div>
+        <div class="big">
+          （1）0011(2)<br>
+          （2）01111(2)<br>
+          （3）1111001(2)<br>
+          （4）110100(2)
+        </div>
+      </div>
+    </section>
+
+    <!-- Q4 -->
+    <section id="q4">
+      <h2><span class="badge">問題</span>確認問題4</h2>
+      <p class="lead">
+        補数を使って、次の4ビットの減算をする。引く数の補数を足して、桁上がりの 1 は捨てる。
+        確認問題2の（3）（4）と同じ式なので、筆算の答えと一致するはず。
+      </p>
+      <table class="summary">
+        <thead>
+          <tr><th></th><th>式</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>（1）</td><td class="num">1010(2) − 0010(2)</td></tr>
+          <tr><td>（2）</td><td class="num">1100(2) − 0011(2)</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2><span class="badge orange">手順</span>確認問題4　減算を加算に変える</h2>
+      <div class="steps">
+        <article class="step">
+          <div class="step-head"><span>（1）1010 − 0010</span></div>
+          <div class="step-body">
+            <p>引く数 0010 の補数を先に求める。</p>
+            <div class="calc">0010 を反転 → 1101
+1101 ＋ 1   → 1110   ← 0010 の補数
+
+1010
+＋1110
+------
+11000
+
+左端の桁上がり 1 を捨てる → 1000</div>
+            <p class="mini">検算：0010＋1110＝10000。1010−0010 の筆算も 1000。</p>
+            <div class="answer-box"><div>解答（1）</div><div class="big">1000(2)</div></div>
+          </div>
+        </article>
+
+        <article class="step">
+          <div class="step-head"><span>（2）1100 − 0011</span></div>
+          <div class="step-body">
+            <div class="calc">0011 を反転 → 1100
+1100 ＋ 1   → 1101   ← 0011 の補数
+
+1100
+＋1101
+------
+11001
+
+左端の桁上がり 1 を捨てる → 1001</div>
+            <p class="mini">確認問題2（4）の筆算 1001 と一致する。</p>
+            <div class="answer-box"><div>解答（2）</div><div class="big">1001(2)</div></div>
+          </div>
+        </article>
+      </div>
+
+      <div class="answer-box">
+        <div>確認問題4　解答まとめ</div>
+        <div class="big">
+          （1）1000(2)<br>
+          （2）1001(2)
+        </div>
+      </div>
+    </section>
+
+    <!-- Q5 -->
+    <section id="q5">
+      <h2><span class="badge">問題</span>確認問題5</h2>
+      <p class="lead">
+        10進数の −2.5 を、32ビットの浮動小数点数（IEEE 754）で表す。
+        並びは例題5と同じで、符号 1ビット・指数 8ビット・仮数 23ビット。
+      </p>
+      <div class="card">
+        <h3>例題5（＋0.625）の型</h3>
+        <ul class="plain">
+          <li>2進数にして、1.×× × 2<sup>指数</sup> の形にする</li>
+          <li>符号：正は 0、負は 1</li>
+          <li>指数：指数にバイアス 127 を足して、8ビットの2進数にする</li>
+          <li>仮数：いちばん左の 1 を省略して、残りを 23ビットにそろえる</li>
+        </ul>
+      </div>
+    </section>
+
+    <section>
+      <h2><span class="badge pink">手順</span>確認問題5　−2.5 を32ビットにする</h2>
+      <div class="steps">
+        <article class="step">
+          <div class="step-head"><span>① 2進数にして正規化する</span></div>
+          <div class="step-body">
+            <div class="calc">2.5 ＝ 2 ＋ 0.5
+     ＝ 2<sup>1</sup> ＋ 2<sup>−1</sup>
+     ＝ 10.1(2)
+
+小数点を左へ1つ動かして
+10.1(2) ＝ 1.01 × 2<sup>1</sup>
+
+符号は負なので
+−2.5 ＝ −1.01 × 2<sup>1</sup></div>
+          </div>
+        </article>
+
+        <article class="step">
+          <div class="step-head"><span>② 符号部</span></div>
+          <div class="step-body">
+            <p>負の数なので <span class="hlw mono">1</span></p>
+          </div>
+        </article>
+
+        <article class="step">
+          <div class="step-head"><span>③ 指数部</span></div>
+          <div class="step-body">
+            <div class="calc">指数は 1
+1 ＋ 127 ＝ 128
+128 ＝ 10000000(2)   （8ビット）</div>
+            <p class="mini">例題5は指数 −1 だったので −1＋127＝126＝01111110。今回は指数が正の 1。</p>
+          </div>
+        </article>
+
+        <article class="step">
+          <div class="step-head"><span>④ 仮数部</span></div>
+          <div class="step-body">
+            <div class="calc">1.01 の先頭の 1 を落とす → 01
+右側を 0 で埋めて 23ビット
+01 00000 00000 00000 00000 0
+＝ 01000000000000000000000</div>
+          </div>
+        </article>
+      </div>
+
+      <p class="lead" style="margin-top:16px;">
+        <span class="legend-dot s"></span>符号
+        <span class="legend-dot e"></span>指数
+        <span class="legend-dot m"></span>仮数
+      </p>
+      <div class="bitrow" aria-label="32ビットの並び">
+        <span class="bit s">1</span>
+        <span class="bit e">1</span><span class="bit e">0</span><span class="bit e">0</span><span class="bit e">0</span>
+        <span class="bit e">0</span><span class="bit e">0</span><span class="bit e">0</span><span class="bit e">0</span>
+        <span class="bit m">0</span><span class="bit m">1</span><span class="bit m">0</span><span class="bit m">0</span>
+        <span class="bit m">0</span><span class="bit m">0</span><span class="bit m">0</span><span class="bit m">0</span>
+        <span class="bit m">0</span><span class="bit m">0</span><span class="bit m">0</span><span class="bit m">0</span>
+        <span class="bit m">0</span><span class="bit m">0</span><span class="bit m">0</span><span class="bit m">0</span>
+        <span class="bit m">0</span><span class="bit m">0</span><span class="bit m">0</span><span class="bit m">0</span>
+        <span class="bit m">0</span><span class="bit m">0</span><span class="bit m">0</span>
+      </div>
+
+      <div class="calc">1 10000000 01000000000000000000000</div>
+
+      <div class="answer-box">
+        <div>確認問題5　解答</div>
+        <div class="big">1 10000000 01000000000000000000000</div>
+        <p class="mini" style="margin-top:8px;">
+          戻し算：指数 128−127＝1、仮数は先頭に1を戻して 1.01。
+          1.01 × 2<sup>1</sup>＝10.1(2)＝2.5。符号が 1 なので −2.5。
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <h2><span class="badge">チェック</span>迷いやすいところ</h2>
+      <div class="card">
+        <ul class="plain">
+          <li>補数は「全部反転しただけ」では足りない。反転したあと <strong>必ず 1 を足す</strong></li>
+          <li>0000111 は 7ビット。先頭の 0 を消すと桁数が変わって補数がずれる</li>
+          <li>補数の減算では、足し算の結果の左端に出た 1 を捨てて、元の桁数だけ残す</li>
+          <li>浮動小数の仮数は、小数点の左にある 1 を書かない。01 の「0」を落とすと 2.5 じゃなくなる</li>
+          <li>負の数でも指数部はそのまま。符号部だけを 1 にする（指数にマイナスは書かない）</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    情報Ⅰ　3章2節｜確認問題2〜5 解答ページ
+    ｜ <a class="back" href="course.html">授業ページへ戻る</a>
+  </footer>
+</body>
+</html>

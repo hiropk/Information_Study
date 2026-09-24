@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>確認問題10｜ランレングス圧縮の解答</title>
+  <style>
+    :root {
+      --bg: #0f1419;
+      --panel: #1a2332;
+      --panel2: #243044;
+      --text: #e8eef6;
+      --muted: #9aacbf;
+      --accent: #4db6ff;
+      --accent2: #45d483;
+      --warn: #ffb74d;
+      --pink: #f8bbd0;
+      --border: #334155;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+      background: radial-gradient(1200px 600px at 10% -10%, #1b2a44 0%, var(--bg) 55%);
+      color: var(--text);
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    header {
+      padding: 28px 24px 8px;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: clamp(1.35rem, 3vw, 1.9rem);
+      letter-spacing: 0.02em;
+    }
+
+    header p {
+      color: var(--muted);
+      margin-top: 6px;
+      font-size: 0.95rem;
+    }
+
+    main {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 16px 20px 64px;
+      display: grid;
+      gap: 24px;
+    }
+
+    section {
+      background: linear-gradient(180deg, var(--panel), #15202e);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 22px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+    }
+
+    section h2 {
+      font-size: 1.2rem;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #041018;
+      background: var(--accent);
+      border-radius: 999px;
+      padding: 2px 10px;
+    }
+
+    .badge.green { background: var(--accent2); }
+    .badge.orange { background: var(--warn); }
+
+    .lead {
+      color: var(--muted);
+      margin-bottom: 16px;
+      font-size: 0.95rem;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-top: 12px;
+    }
+
+    .card h3 {
+      font-size: 1rem;
+      margin-bottom: 8px;
+    }
+
+    ul.plain { margin-left: 1.2em; }
+    ul.plain li { margin: 4px 0; }
+
+    .mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.92rem;
+    }
+
+    .hl {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .hl2 {
+      color: var(--accent2);
+      font-weight: 700;
+    }
+
+    .rules {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    @media (max-width: 700px) {
+      .rules { grid-template-columns: 1fr; }
+    }
+
+    .rule-num {
+      display: inline-flex;
+      width: 1.5em;
+      height: 1.5em;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #041018;
+      font-weight: 800;
+      font-size: 0.85rem;
+      margin-right: 6px;
+    }
+
+    /* grid figure */
+    .figure-wrap {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 20px;
+      align-items: start;
+      margin-top: 8px;
+    }
+
+    @media (max-width: 700px) {
+      .figure-wrap { grid-template-columns: 1fr; justify-items: center; }
+    }
+
+    .bit-grid {
+      display: grid;
+      grid-template-columns: repeat(16, 18px);
+      grid-template-rows: repeat(16, 18px);
+      gap: 1px;
+      background: #3b4a63;
+      border: 2px solid #3b4a63;
+      border-radius: 6px;
+      overflow: hidden;
+      width: max-content;
+    }
+
+    .bit-grid .cell {
+      width: 18px;
+      height: 18px;
+      display: grid;
+      place-items: center;
+      font-size: 0.55rem;
+      font-weight: 700;
+      font-family: ui-monospace, Menlo, Consolas, monospace;
+    }
+
+    .cell.a { background: #fff; color: #333; }
+    .cell.b { background: var(--pink); color: #880e4f; }
+
+    .legend {
+      font-size: 0.92rem;
+    }
+
+    .legend .swatch {
+      display: inline-block;
+      width: 1em;
+      height: 1em;
+      border-radius: 3px;
+      vertical-align: -2px;
+      margin-right: 4px;
+      border: 1px solid rgba(255,255,255,0.3);
+    }
+
+    .legend .swatch.a { background: #fff; }
+    .legend .swatch.b { background: var(--pink); }
+
+    .row-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .row-tag {
+      font-size: 0.8rem;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 4px 10px;
+      background: var(--panel2);
+    }
+
+    /* step cards */
+    .steps { display: grid; gap: 14px; margin-top: 8px; }
+
+    .step {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      background: rgba(255,255,255,0.02);
+    }
+
+    .step-head {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 14px;
+      align-items: center;
+      padding: 10px 14px;
+      background: rgba(77, 182, 255, 0.08);
+      border-bottom: 1px solid var(--border);
+      font-weight: 700;
+    }
+
+    .step-body { padding: 12px 14px; font-size: 0.95rem; }
+
+    .bits {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 10px 0;
+      align-items: center;
+    }
+
+    .bit-chunk {
+      font-family: ui-monospace, Menlo, Consolas, monospace;
+      background: #0b1220;
+      border: 1px solid #3b4a63;
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 0.95rem;
+      letter-spacing: 0.04em;
+    }
+
+    .bit-chunk.start { border-color: var(--accent); color: var(--accent); }
+    .bit-chunk.count { border-color: var(--accent2); color: var(--accent2); }
+
+    .mini {
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    .calc {
+      font-family: ui-monospace, Menlo, Consolas, monospace;
+      background: #0b1220;
+      border: 1px dashed #3b4a63;
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-top: 12px;
+      line-height: 1.9;
+      overflow-x: auto;
+    }
+
+    .answer-box {
+      margin-top: 12px;
+      padding: 16px 18px;
+      border-radius: 12px;
+      border: 1px solid rgba(69, 212, 131, 0.45);
+      background: rgba(69, 212, 131, 0.1);
+    }
+
+    .answer-box .big {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--accent2);
+    }
+
+    table.summary {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 0.92rem;
+    }
+
+    table.summary th,
+    table.summary td {
+      border: 1px solid var(--border);
+      padding: 8px 10px;
+      text-align: left;
+    }
+
+    table.summary th {
+      background: rgba(255,255,255,0.04);
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    table.summary td.num {
+      font-family: ui-monospace, Menlo, Consolas, monospace;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.85rem;
+      padding-bottom: 28px;
+    }
+
+    a.back {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    a.back:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>確認問題10｜ランレングス圧縮の解答</h1>
+    <p>情報Ⅰ　3章1節　データ量とデータの圧縮｜例題13と同じ約束で解く詳細解答</p>
+  </header>
+
+  <main>
+    <section>
+      <h2><span class="badge">問題</span>確認問題10</h2>
+      <p class="lead">
+        右の図のデータ（16×16ビット）の A を 0、B を 1 として、
+        例題13の約束に従って<strong>1行ごと</strong>に圧縮する。
+        圧縮後のデータ量（ビット）と、圧縮率（％）を求めよ。
+      </p>
+
+      <div class="rules">
+        <div class="card">
+          <h3><span class="rule-num">1</span>始まりの1ビット</h3>
+          <ul class="plain">
+            <li>始まりが <strong>A</strong> → <span class="hl mono">0</span></li>
+            <li>始まりが <strong>B</strong> → <span class="hl mono">1</span></li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3><span class="rule-num">2</span>続く個数は4ビット</h3>
+          <ul class="plain">
+            <li>続く個数を <strong>「個数 − 1」</strong> で表す</li>
+            <li>例：16個 → 15 → <span class="hl2 mono">1111</span></li>
+            <li>記号は交互に切り替わるので、2回目以降は個数だけでOK</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2><span class="badge orange">図</span>16×16 のデータ（教科書の図）</h2>
+      <p class="lead">ピンクが B（=1）、白が A（=0）。「エ」の形になっているよ。</p>
+
+      <div class="figure-wrap">
+        <div id="grid" class="bit-grid" aria-label="16x16の確認問題10の図"></div>
+        <div class="legend">
+          <p><span class="swatch b"></span>B = 1（ピンク）</p>
+          <p><span class="swatch a"></span>A = 0（白）</p>
+          <p class="mini" style="margin-top:10px;">行のパターンは次の2種類だけ。</p>
+          <div class="row-tags">
+            <span class="row-tag">1〜3・7〜9行目：Bが16個</span>
+            <span class="row-tag">4〜6・10〜16行目：Bが3個 → Aが13個</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2><span class="badge">手順</span>行ごとに符号化していく</h2>
+      <p class="lead">同じ並びの行はまとめて計算してOK（例題13と同じ考え方）。</p>
+
+      <div class="steps">
+        <!-- type 1 -->
+        <article class="step">
+          <div class="step-head">
+            <span>パターン①</span>
+            <span class="mini">1〜3行目　／　7〜9行目（合計6行）</span>
+          </div>
+          <div class="step-body">
+            <p>並び：<span class="mono">BBBBBBBBBBBBBBBB</span>（Bが16個）</p>
+            <ul class="plain">
+              <li>始まりは B → 先頭ビットは <span class="hl mono">1</span></li>
+              <li>Bが16個続く → 16−1＝15 → 2進数で <span class="hl2 mono">1111</span></li>
+            </ul>
+            <div class="bits">
+              <span class="bit-chunk start">1</span>
+              <span class="bit-chunk count">1111</span>
+              <span class="mini">→ 合わせて <strong>5ビット</strong></span>
+            </div>
+            <p class="mini">書き方の例：<span class="mono">1 1111</span></p>
+          </div>
+        </article>
+
+        <!-- type 2 -->
+        <article class="step">
+          <div class="step-head">
+            <span>パターン②</span>
+            <span class="mini">4〜6行目　／　10〜16行目（合計10行）</span>
+          </div>
+          <div class="step-body">
+            <p>並び：<span class="mono">BBBAAAAAAAAAAAAA</span>（Bが3個 → Aが13個）</p>
+            <ul class="plain">
+              <li>始まりは B → 先頭ビットは <span class="hl mono">1</span></li>
+              <li>Bが3個 → 3−1＝2 → <span class="hl2 mono">0010</span></li>
+              <li>次は A に切り替わり、Aが13個 → 13−1＝12 → <span class="hl2 mono">1100</span></li>
+            </ul>
+            <div class="bits">
+              <span class="bit-chunk start">1</span>
+              <span class="bit-chunk count">0010</span>
+              <span class="bit-chunk count">1100</span>
+              <span class="mini">→ 合わせて <strong>9ビット</strong></span>
+            </div>
+            <p class="mini">書き方の例：<span class="mono">1 0010 1100</span></p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section>
+      <h2><span class="badge green">計算</span>合計ビット数と圧縮率</h2>
+
+      <table class="summary">
+        <thead>
+          <tr>
+            <th>行</th>
+            <th>符号化</th>
+            <th>1行あたり</th>
+            <th>行数</th>
+            <th>小計</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1〜3行目</td>
+            <td class="mono">1 1111</td>
+            <td class="num">5ビット</td>
+            <td class="num">3行</td>
+            <td class="num">15ビット</td>
+          </tr>
+          <tr>
+            <td>4〜6行目</td>
+            <td class="mono">1 0010 1100</td>
+            <td class="num">9ビット</td>
+            <td class="num">3行</td>
+            <td class="num">27ビット</td>
+          </tr>
+          <tr>
+            <td>7〜9行目</td>
+            <td class="mono">1 1111</td>
+            <td class="num">5ビット</td>
+            <td class="num">3行</td>
+            <td class="num">15ビット</td>
+          </tr>
+          <tr>
+            <td>10〜16行目</td>
+            <td class="mono">1 0010 1100</td>
+            <td class="num">9ビット</td>
+            <td class="num">7行</td>
+            <td class="num">63ビット</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="calc">
+圧縮後のデータ量<br>
+　= 5×3 ＋ 9×3 ＋ 5×3 ＋ 9×7<br>
+　= 15 ＋ 27 ＋ 15 ＋ 63<br>
+　= <span class="hl2">120ビット</span><br><br>
+圧縮前のデータ量 = 16×16 = <span class="hl">256ビット</span><br><br>
+圧縮率 = 圧縮後 ÷ 圧縮前 × 100<br>
+　　　 = 120 ÷ 256 × 100<br>
+　　　 = <span class="hl2">46.875％</span>
+      </div>
+
+      <div class="answer-box">
+        <div>解答</div>
+        <div class="big">120ビット　／　圧縮率 46.875％</div>
+        <p class="mini" style="margin-top:8px;">
+          ※圧縮率の「数値が小さい」ほど、より小さく圧縮できている、という意味だったね（例題13の考察）。
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <h2><span class="badge">チェック</span>例題13とのちがい</h2>
+      <div class="card">
+        <ul class="plain">
+          <li>例題13（顔のような図）：5×3＋21×2＋13×11＝<strong>200ビット</strong>（圧縮率78.125％）</li>
+          <li>確認問題10（エの形）：5×6＋9×10＝<strong>120ビット</strong>（圧縮率46.875％）</li>
+          <li>同じ約束でも、図の並びが単純なほどランが少なくなり、圧縮後のビット数は小さくなる</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    情報Ⅰ　3章1節｜確認問題10 解答ページ
+    ｜ <a class="back" href="course.html">授業ページへ戻る</a>
+  </footer>
+
+  <script>
+    // 確認問題10の図（B=ピンク, A=白）
+    const rows = [
+      "BBBBBBBBBBBBBBBB", // 1
+      "BBBBBBBBBBBBBBBB", // 2
+      "BBBBBBBBBBBBBBBB", // 3
+      "BBBAAAAAAAAAAAAA", // 4
+      "BBBAAAAAAAAAAAAA", // 5
+      "BBBAAAAAAAAAAAAA", // 6
+      "BBBBBBBBBBBBBBBB", // 7
+      "BBBBBBBBBBBBBBBB", // 8
+      "BBBBBBBBBBBBBBBB", // 9
+      "BBBAAAAAAAAAAAAA", // 10
+      "BBBAAAAAAAAAAAAA", // 11
+      "BBBAAAAAAAAAAAAA", // 12
+      "BBBAAAAAAAAAAAAA", // 13
+      "BBBAAAAAAAAAAAAA", // 14
+      "BBBAAAAAAAAAAAAA", // 15
+      "BBBAAAAAAAAAAAAA", // 16
+    ];
+
+    const grid = document.getElementById("grid");
+    rows.forEach((row) => {
+      [...row].forEach((ch) => {
+        const cell = document.createElement("div");
+        cell.className = "cell " + (ch === "B" ? "b" : "a");
+        cell.textContent = ch;
+        grid.appendChild(cell);
+      });
+    });
+  </script>
+</body>
+</html>
