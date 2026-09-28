@@ -19,7 +19,7 @@ Information_Study/
 │   ├── announcements/         #   お知らせ（提出状況ページ等）
 │   ├── partials/              #   共通パーツ（ヘッダー/フッター）
 │   └── assets/                #   CSS・JS・favicon・公開用スライドPDF
-│       └── slides/            #     公開するスライドPDF（コミット対象）
+│       └── slides/            #     公開してよい自作資料のPDFだけ（節スライドは置かない）
 ├── slides/                    # 授業スライド（Rabbit / RD形式）
 │   ├── 2026/                  #   年度ごとの .rd ソース（chXX-secYY.rd）
 │   ├── _sample/sample.rd      #   記法サンプル
@@ -47,7 +47,7 @@ Information_Study/
   - Source: Deploy from a branch
   - Branch: `main` / Folder: `/docs`
 
-公開後は `docs/index.html` がトップになる。授業ページ `docs/course.html` に、各節のスライドPDFリンクと確認テスト（Google Forms）カードを掲載する。
+公開後は `docs/index.html` がトップになる。授業ページ `docs/course.html` の資料には、教科書本文に沿っていない自作資料だけを置く。教科書の節スライド PDF は置かない。確認テストは Google Forms へのリンクだけ。
 
 ---
 
@@ -69,15 +69,15 @@ slides/2026/
 ### PDF への変換
 
 ```bash
-# 出力先を明示（公開用は docs/assets/slides/ に置く）
-bin/rd2pdf slides/2026/ch01-sec01.rd docs/assets/slides/ch01-sec01.pdf
-
-# 出力先を省略 → docs/assets/slides/<ファイル名>.pdf に保存
+# 教科書の節スライドは公開しない。出力先を省略すると slides/ 配下（gitignore）に保存される
 bin/rd2pdf slides/2026/ch01-sec01.rd
+
+# 公開してよい自作資料だけ docs/assets/slides/ に置く
+bin/rd2pdf slides/2026/special-typing.rd docs/assets/slides/special-typing.pdf
 ```
 
 > `slides/` 以下に生成される `.pdf` / `.ps` / `.png` は `.gitignore` 済み。
-> 公開サイトから参照するPDFは `docs/assets/slides/` に出力し、こちらはコミット対象。
+> `docs/assets/slides/` に置くのは、教科書本文に沿って作っていない自作資料だけ。教科書の節（`chXX-secYY`）の PDF は置かない。
 
 初回は `slides/` で `bundle install`（Ruby 3.3.6 / rbenv）が必要。
 
