@@ -158,7 +158,7 @@ function initAttendanceForm() {
   const form = $("#attendance-form");
   if (!form) return;
 
-  const API_URL = "https://dae9-240b-c010-630-f2bb-e81e-81e5-79ad-3871.ngrok-free.app/api/v1/attendances";
+  const API_URL = "https://7225-240b-c020-4b0-60c4-582d-9dfb-e3f0-f4bf.ngrok-free.app/api/v1/attendances";
 
   const { year, subject, className } = getParams();
   const lessonCode =
