@@ -25,10 +25,8 @@ test_generator/node_modules
 # ===== test_generator: エクスポートした回答データ（個人情報を含むため共有しない） =====
 test_generator/result/
 
-# ===== Slides: generated files (source dir only) =====
-slides/**/*.pdf
-slides/**/*.ps
-slides/**/*.png
+# ===== Slides: 授業スライド本体はリポジトリに上げない =====
+slides/
 
 # ===== 定期テスト（共有しない） =====
 exams/
